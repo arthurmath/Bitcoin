@@ -185,8 +185,6 @@ class InterfaceVisuelle:
             hash_precedent=self.blockchain.chaine[-1].hash,
             difficulte=self.difficulte
         )
-
-        print("DIFFICULTEEEEEEEEEE : ", self.difficulte)
         
         # Miner (Proof of Work)
         cible = '0' * self.difficulte

@@ -36,7 +36,7 @@ class Utilisateur:
         # Stocker la signature dans la transaction
         transaction.signature = binascii.hexlify(signature).decode('ascii')
     
-    def verifier_signature(cle_publique_hex, message, signature_hex):
+    def verifier_signature(cle_publique_hex, message, signature):
         """
         Vérifie une signature avec la clé publique
         Méthode statique car n'importe qui peut vérifier
@@ -44,7 +44,7 @@ class Utilisateur:
         try:
             cle_pub_bytes = binascii.unhexlify(cle_publique_hex)
             cle_publique = VerifyingKey.from_string(cle_pub_bytes, curve=SECP256k1)
-            signature_bytes = binascii.unhexlify(signature_hex)
+            signature_bytes = binascii.unhexlify(signature)
             message_bytes = message.encode('utf-8')
             return cle_publique.verify(signature_bytes, message_bytes)
         except:
