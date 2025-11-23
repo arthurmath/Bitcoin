@@ -27,26 +27,18 @@ Cela permet de confirmer l’authenticité de la transaction à partir de la cl�
 
 ### **2. Génération de la clé publique**
 
-La clé publique (K) est calculée à partir de la clé privée (k) :
-
-[
-K = k \times G
-]
+La clé publique (K) est calculée à partir de la clé privée (k) : K = k × G
 
 avec :
 
-* (k) = clé privée (entier),
-* (G) = point générateur de la courbe,
-* (\times) = multiplication de point sur la courbe elliptique.
+* k = clé privée (entier),
+* G = point générateur de la courbe,
+* × = multiplication de point sur la courbe elliptique.
 
 
 ### **3. Mathématiques sous-jacentes**
 
-Bitcoin utilise la courbe elliptique secp256k1, définie par :
-
-[
-y^2 = x^3 + 7 \mod p
-]
+Bitcoin utilise la courbe elliptique secp256k1, définie par : y^2 = x^3 + 7 mod p
 
 où p est un nombre premier très grand (de l’ordre de (2^{256})).
 
@@ -76,15 +68,11 @@ Les mineurs :
 * complètent ce bloc avec des métadonnées ;
 * font varier un nombre (le nonce) pour obtenir un hash qui respecte la cible de difficulté.
 
-Le calcul à satisfaire est :
-
-[
-\text{SHA256}(\text{SHA256}(\text{header du bloc + nonce})) < \text{cible}
-]
+Le calcul à satisfaire est : SHA256(SHA256(header du bloc + nonce)) < cible
 
 Il répète donc :
 while True:
-    hash_val = sha256(sha256(block_header))
+    hash_val = SHA256(SHA256(block_header(nonce)))
     if hash_val < target:
         break
     else:
