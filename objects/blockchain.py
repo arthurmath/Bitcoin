@@ -1,6 +1,5 @@
-import json
-from bloc import Bloc
-from transaction import Transaction
+from objects.bloc import Bloc
+from objects.transaction import Transaction
 
 
 class Blockchain:
@@ -8,23 +7,33 @@ class Blockchain:
         self.chaine = []
         self.transactions_en_attente = []
         self.difficulte = difficulte
-        self.creer_bloc_genesis()
+        self.bloc_temporaire = None
     
-    def creer_bloc_genesis(self):
-        """Crée le premier bloc de la blockchain (bloc genesis)"""
+
+    def creer_bloc_genesis(self, utilisateurs=None):
+        """Crée le premier bloc de la blockchain (bloc genesis) sans le miner"""
         print("\n" + "="*60)
         print("🌟 Création du bloc Genesis")
         print("="*60)
         
-        # Transaction genesis
-        transaction_genesis = Transaction(
-            expediteur_adresse="GENESIS",
-            destinataire_adresse="GENESIS",
-            montant=0,
-            cle_publique_expediteur="SYSTEM"
-        )
-        transaction_genesis.hash_transaction = transaction_genesis.calculer_hash()
-        
+        # Si des utilisateurs sont fournis, créer des transactions Genesis pour chacun
+        if utilisateurs:
+            for user in utilisateurs:
+                transaction_genesis = Transaction(
+                    expediteur_adresse="GENESIS",
+                    destinataire_adresse=user.adresse,
+                    montant=user.solde_btc,
+                    cle_publique_expediteur="SYSTEM"
+                )
+        else:
+            # Transaction genesis par défaut si aucun utilisateur
+            transaction_genesis = Transaction(
+                expediteur_adresse="GENESIS",
+                destinataire_adresse="GENESIS",
+                montant=0,
+                cle_publique_expediteur="SYSTEM"
+            )
+         
         bloc_genesis = Bloc(
             index=0,
             transactions=[transaction_genesis],
@@ -32,29 +41,38 @@ class Blockchain:
             difficulte=self.difficulte
         )
         
-        bloc_genesis.miner_bloc()
-        self.chaine.append(bloc_genesis)
+        return bloc_genesis
     
-    def obtenir_dernier_bloc(self):
-        """Retourne le dernier bloc de la chaîne"""
-        return self.chaine[-1]
-    
-    def ajouter_transaction(self, transaction):
-        """Ajoute une transaction à la liste des transactions en attente"""
-        if transaction.est_valide():
-            self.transactions_en_attente.append(transaction)
-            print(f"✅ Transaction ajoutée: {transaction}")
-            return True
-        else:
-            print(f"❌ Transaction invalide: {transaction}")
-            return False
+    def _initialiser_bloc_temporaire(self):
+        """Crée ou recrée le bloc temporaire pour accumuler les transactions"""
+        if len(self.chaine) > 0:
+            self.bloc_temporaire = Bloc(
+                index=len(self.chaine),
+                transactions=[],
+                hash_precedent=self.chaine[-1].hash,
+                difficulte=self.difficulte
+            )
     
     def ajouter_bloc(self, bloc):
         """Ajoute un bloc à la chaîne après validation"""
-        if bloc.est_valide() and bloc.hash_precedent == self.obtenir_dernier_bloc().hash:
+        # Si c'est le premier bloc (genesis), on vérifie juste qu'il est valide
+        if len(self.chaine) == 0:
+            if bloc.est_valide() and bloc.index == 0:
+                self.chaine.append(bloc)
+                # Initialiser le bloc temporaire maintenant qu'on a le bloc genesis
+                self._initialiser_bloc_temporaire()
+                print(f"✅ Bloc genesis ajouté à la blockchain: {bloc}")
+                return True
+            else:
+                print(f"❌ Bloc genesis invalide, rejeté")
+                return False
+        # Pour les blocs suivants, vérifier le chaînage
+        elif bloc.est_valide() and bloc.hash_precedent == self.chaine[-1].hash:
             self.chaine.append(bloc)
             # Vider les transactions en attente qui ont été incluses
             self.transactions_en_attente = []
+            # Réinitialiser le bloc temporaire
+            self._initialiser_bloc_temporaire()
             print(f"✅ Bloc ajouté à la blockchain: {bloc}")
             return True
         else:

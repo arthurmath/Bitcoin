@@ -6,141 +6,119 @@ BLOCKCHAIN BITCOIN - SIMULATION
 ================================================================================
 BLOC #0
 ================================================================================
-Hash: 0000f5814cf56967177d8b6c5c3ccad65dfb759ca93e2a7f544cd5a0b4813efc
+Hash: 0000036318db8197343637840554b54e4175c95d85e1ee1d9bffb888505731c4
 Hash précédent: 0000000000000000000000000000000000000000000000000000000000000000
-Timestamp: 1763911467.827025
-Nonce: 4573
-Difficulté: 4
-Racine Merkle: a0913bcf05b3a786db0f72f89c00fd32e8d18e247503f43d57a25a49f41a84aa
+Timestamp: 1763920062.0768871
+Nonce: 177909
+Difficulté: 5
+Racine Merkle: 5094f8a45794a942a75503da0f0deee928e0e0c4ae4de726c4c1442ec6392f79
 
-Transactions (1):
+Transactions (4):
 --------------------------------------------------------------------------------
 
 Transaction #1:
   Expéditeur: GENESIS
-  Destinataire: GENESIS
-  Montant: 0 BTC
-  Hash: fee7cd96ced84c972d2a932d62d0ec8839762eb2688c03e138dcccb321592e2d
+  Destinataire: 06a80c073b8a75d4c2a71bf76dcd41d4284c6420
+  Montant: 30.80107979473593 BTC
+  Hash: aa0d3893d8dc74e28e3a772ed76f853d110b69c4cde0a310f6c3e0301065d1bb
+
+Transaction #2:
+  Expéditeur: GENESIS
+  Destinataire: ded036c6bc94251cd5e8b54024e2da5f1b3c18e5
+  Montant: 74.7404744292863 BTC
+  Hash: 1fbd0c4f3c457bef2719e87417a1e4adc890186289f44d890b5f90213ceb2dd2
+
+Transaction #3:
+  Expéditeur: GENESIS
+  Destinataire: 0a457b18201cfd050bd381f20abadef8c53169e6
+  Montant: 72.2098812034969 BTC
+  Hash: 64d5ffdc6a77db1ed02918b0b4d448cf96d2947b504a5b6862ebd12e2671f412
+
+Transaction #4:
+  Expéditeur: GENESIS
+  Destinataire: 79a21911cc40cc2e4038feca0e393984a6e851a6
+  Montant: 29.963610339466854 BTC
+  Hash: afa46231e95144335e8e3b5c3505bdb4c6ae53bcf5aa950da5238a04491e5d42
 
 
 ================================================================================
 BLOC #1
 ================================================================================
-Hash: 0000397ece5e0b7de69014f0261577bea028c8f7981bc9085e7b3017d8afea8a
-Hash précédent: 0000f5814cf56967177d8b6c5c3ccad65dfb759ca93e2a7f544cd5a0b4813efc
-Timestamp: 1763911467.8601081
-Nonce: 7605
-Difficulté: 4
-Racine Merkle: d4203400517a76c816bb212c0dfb1ed4db2f3f225dc4cd8eb81917c23e7b3bc6
-
-Transactions (1):
---------------------------------------------------------------------------------
-
-Transaction #1:
-  Expéditeur: COINBASE
-  Destinataire: 767947d1580172c2e976a3cedb9f0b3b4f205041
-  Montant: 3.125 BTC
-  Hash: c092c1e868a5439f552e16e85ec894a1a4c6a9101ba2f962e6c17ad398188f14
-
-
-================================================================================
-BLOC #2
-================================================================================
-Hash: 000090fd572da8ca43c0a51e9a46b17382d51cd613f5b24a3a7e4e01155ca9c9
-Hash précédent: 0000397ece5e0b7de69014f0261577bea028c8f7981bc9085e7b3017d8afea8a
-Timestamp: 1763911467.899947
-Nonce: 1226
-Difficulté: 4
-Racine Merkle: 3c468f68c4ba7da75a56b8d6acc5019a58aac6e231655190aa71166bc8761a20
-
-Transactions (1):
---------------------------------------------------------------------------------
-
-Transaction #1:
-  Expéditeur: COINBASE
-  Destinataire: 767947d1580172c2e976a3cedb9f0b3b4f205041
-  Montant: 3.125 BTC
-  Hash: 97e1b6beea2016caf88712748dea33987680340643d2c752ced0f053bd16f390
-
-
-================================================================================
-BLOC #3
-================================================================================
-Hash: 0000b8f69b1c363b9877f0d446e8fa1ed9b37cfa946482eacdad0d85b175d409
-Hash précédent: 000090fd572da8ca43c0a51e9a46b17382d51cd613f5b24a3a7e4e01155ca9c9
-Timestamp: 1763911467.935619
-Nonce: 3590
-Difficulté: 4
-Racine Merkle: a655af309c93e5dd15951505c8233489a0e78b4d28c79e74fc9b7d12ddc18516
+Hash: 0000011e3ca607148860e82188d81a35a7a41b2e7dc5f90d6cf3af5696a4e894
+Hash précédent: 0000036318db8197343637840554b54e4175c95d85e1ee1d9bffb888505731c4
+Timestamp: 1763920062.9262872
+Nonce: 1002562
+Difficulté: 5
+Racine Merkle: 03ef36b80cc2ed9a731e2203c70a1249a55da0f462b5851fb200f33e266e34b8
 
 Transactions (5):
 --------------------------------------------------------------------------------
 
 Transaction #1:
   Expéditeur: COINBASE
-  Destinataire: af8e021182caf14e8a0e0472d9a64fe74a9a9817
+  Destinataire: 06a80c073b8a75d4c2a71bf76dcd41d4284c6420
   Montant: 3.1254 BTC
-  Hash: a0d107c27d3ae9ecdb35b1e063652c45b1d2994bba326b3e4b79c538169fa704
+  Hash: eb2c4c2681849e6054c427ac58529518e6a03d5a9e68ada81aac733607ab30d8
 
 Transaction #2:
-  Expéditeur: af8e021182caf14e8a0e0472d9a64fe74a9a9817
-  Destinataire: 767947d1580172c2e976a3cedb9f0b3b4f205041
+  Expéditeur: 06a80c073b8a75d4c2a71bf76dcd41d4284c6420
+  Destinataire: ded036c6bc94251cd5e8b54024e2da5f1b3c18e5
   Montant: 1.5 BTC
-  Hash: 3f1ae1449fa8fc42d21718afe4ccb597dddc598c2360a39cfe5ae1d811e0ce39
-  Signature: 6541e461d964d532fc1c5cd3559630192f4d6b6db81a09873f...
+  Hash: cccd956d2a20affe867feea6e762a1e37cbd3837ac259a0a4d0ddfcef2b50d7b
+  Signature: febcbded602b95051ee6a1c12889a7b810f04e760c9b06c401...
 
 Transaction #3:
-  Expéditeur: 767947d1580172c2e976a3cedb9f0b3b4f205041
-  Destinataire: ca78cf5cb80b6f3502241e7e4b1607cd51b1b6c4
+  Expéditeur: ded036c6bc94251cd5e8b54024e2da5f1b3c18e5
+  Destinataire: 0a457b18201cfd050bd381f20abadef8c53169e6
   Montant: 0.5 BTC
-  Hash: f5174e029d2261210f1f36f74a7a3649a3e552d6ebbb8f9f98aca03235c265e5
-  Signature: 10f67afed249f06e92a00aced29fbfa10d189d0423480c9ac2...
+  Hash: bbc4e38e80f9d39efafbadccb9de833b4d03845f77a5b62490c8f25def8ec054
+  Signature: 98468c9a9db07ceef9ce7b6551077dee7ef1540e1e3633d404...
 
 Transaction #4:
-  Expéditeur: ca78cf5cb80b6f3502241e7e4b1607cd51b1b6c4
-  Destinataire: 253415778ed4399d29b2318bb1c8ce617e99708f
+  Expéditeur: 0a457b18201cfd050bd381f20abadef8c53169e6
+  Destinataire: 79a21911cc40cc2e4038feca0e393984a6e851a6
   Montant: 1.0 BTC
-  Hash: ad9af4bf40b38102d7cc14d4a8abf5cf6de9217931bb8f02c2ec0d88c01ee326
-  Signature: cd828870e9339acf9f4ca0eb9c80f1867279b044215895ed2b...
+  Hash: c05d90a50e4859de817f75cd9966e92ca0fe5d4e2fa6ce1ae3138a2b06bed07c
+  Signature: e6e6bfabc0bb999d1741b49b705cddd0bdb379e04147790369...
 
 Transaction #5:
-  Expéditeur: 253415778ed4399d29b2318bb1c8ce617e99708f
-  Destinataire: af8e021182caf14e8a0e0472d9a64fe74a9a9817
+  Expéditeur: 79a21911cc40cc2e4038feca0e393984a6e851a6
+  Destinataire: 06a80c073b8a75d4c2a71bf76dcd41d4284c6420
   Montant: 0.8 BTC
-  Hash: e94311e3ef9fede24738a32a8a2f89da8bcb397bf4b4a7f14d5a9fb04b76da87
-  Signature: f8f4b60ed522d98a057ad5998f24c898b5b80dadadb85646c5...
+  Hash: e35f1c85276a7b7d013cb3c0b69172ef2999f4d00f1eeb4894025a0e2d33d6bf
+  Signature: 4be43c9c47a27aae6dda75488b5d1185103903a098eefbdf33...
 
 
 ================================================================================
-BLOC #4
+BLOC #2
 ================================================================================
-Hash: 000013f45ed4cb095c73200024b535ee361df922900f7450abe352c1748fbe80
-Hash précédent: 0000b8f69b1c363b9877f0d446e8fa1ed9b37cfa946482eacdad0d85b175d409
-Timestamp: 1763911467.9937222
-Nonce: 78517
-Difficulté: 4
-Racine Merkle: 75408b825c5aeece9049d7856ee4921cf1067ee782c5746d4748a2d80767b09f
+Hash: 00000f2608353874de91b587de0f05fc203795715fed41008905db5a11a9a833
+Hash précédent: 0000011e3ca607148860e82188d81a35a7a41b2e7dc5f90d6cf3af5696a4e894
+Timestamp: 1763920067.9987452
+Nonce: 1599277
+Difficulté: 5
+Racine Merkle: f5760fdcef49ab2d523be510aef9d1ff8c7ff13b9195a1e22ec8255013c4e2c8
 
 Transactions (3):
 --------------------------------------------------------------------------------
 
 Transaction #1:
   Expéditeur: COINBASE
-  Destinataire: 767947d1580172c2e976a3cedb9f0b3b4f205041
+  Destinataire: ded036c6bc94251cd5e8b54024e2da5f1b3c18e5
   Montant: 3.1252 BTC
-  Hash: 439ddba02abf9bc564017c5b13abbae125512298e69c4082cf9fe2f7936e273d
+  Hash: e3dfaab1911eeabfc4d7e01a9f9a69638f0787a1ce48b20a6c6966e2935b18af
 
 Transaction #2:
-  Expéditeur: af8e021182caf14e8a0e0472d9a64fe74a9a9817
-  Destinataire: ca78cf5cb80b6f3502241e7e4b1607cd51b1b6c4
+  Expéditeur: 06a80c073b8a75d4c2a71bf76dcd41d4284c6420
+  Destinataire: 0a457b18201cfd050bd381f20abadef8c53169e6
   Montant: 2.0 BTC
-  Hash: 0ed6e2cd095f8d283417a5d156ebe4169e805db13d979c8616226f9b4b6fbfee
-  Signature: d1e255b4cf075ba9cb66fb78f9f4fdea33254452cceb5fb7fa...
+  Hash: 06622c7d56748bccae5a8671057cac5be4da8629e1880fc31b393c8709c1b2b6
+  Signature: 530fcecff1cfcb7f229d6a0a8688c58f4e111c1dba80611f59...
 
 Transaction #3:
-  Expéditeur: 767947d1580172c2e976a3cedb9f0b3b4f205041
-  Destinataire: 253415778ed4399d29b2318bb1c8ce617e99708f
+  Expéditeur: ded036c6bc94251cd5e8b54024e2da5f1b3c18e5
+  Destinataire: 79a21911cc40cc2e4038feca0e393984a6e851a6
   Montant: 1.0 BTC
-  Hash: dafe0af9ca1f9eab254b2020bf8a03f3ff0a7407c2c99160d8c240037c0234d7
-  Signature: e2d3b3c4601742a26952110b719a9eaaa22295b81aa4182107...
+  Hash: 630d0f793ea86b0ed871084207286d17af5445c5b9eccb76270e36988d7d197f
+  Signature: 462813b3eeb359f81e690ab90ac646b14af23a93ac2b5f1fcc...
 

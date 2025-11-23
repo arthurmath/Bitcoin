@@ -1,5 +1,5 @@
-from bloc import Bloc
-from transaction import Transaction
+from objects.bloc import Bloc
+from objects.transaction import Transaction
 
 
 class Mineur:
@@ -7,6 +7,35 @@ class Mineur:
         self.nom = nom
         self.adresse = adresse
         self.solde_btc = 0.0
+    
+    def miner_bloc_genesis(self, bloc_genesis):
+        """
+        Mine le bloc genesis (sans transaction coinbase)
+        """
+        print(f"\n{'='*60}")
+        print(f"🔨 {self.nom} mine le bloc genesis")
+        print(f"{'='*60}")
+        
+        # Miner le bloc genesis (Proof of Work)
+        cible = '0' * bloc_genesis.difficulte
+        print(f"\n⛏️  Mining bloc genesis... (difficulté: {bloc_genesis.difficulte} zéros)")
+        
+        tentatives = 0
+        while True:
+            bloc_genesis.hash = bloc_genesis.calculer_hash()
+            tentatives += 1
+            
+            if bloc_genesis.hash.startswith(cible):
+                print(f"✅ Bloc genesis miné ! Hash: {bloc_genesis.hash}")
+                print(f"   Nonce trouvé: {bloc_genesis.nonce} après {tentatives} tentatives")
+                break
+            
+            bloc_genesis.nonce += 1
+            
+            if tentatives % 100000 == 0:
+                print(f"   {tentatives} tentatives...")
+        
+        return bloc_genesis
     
     def miner_bloc(self, transactions_en_attente, hash_dernier_bloc, index_bloc, recompense=3.125, difficulte=4):
         """
@@ -27,7 +56,6 @@ class Mineur:
             montant=recompense,
             cle_publique_expediteur="SYSTEM"
         )
-        transaction_recompense.hash_transaction = transaction_recompense.calculer_hash()
         
         # Calculer les frais de transaction
         frais_totaux = sum(0.0001 for _ in transactions_en_attente)  # 0.0001 BTC par transaction
@@ -49,7 +77,25 @@ class Mineur:
         )
         
         # Miner le bloc (Proof of Work)
-        bloc.miner_bloc()
+        cible = '0' * difficulte
+        print(f"\n⛏️  Mining bloc {bloc.index}... (difficulté: {difficulte} zéros)")
+        
+        tentatives = 0
+        while True:
+            bloc.hash = bloc.calculer_hash()
+            tentatives += 1
+            
+            # Vérifier si le hash commence par le nombre requis de zéros
+            if bloc.hash.startswith(cible):
+                print(f"✅ Bloc miné ! Hash: {bloc.hash}")
+                print(f"   Nonce trouvé: {bloc.nonce} après {tentatives} tentatives")
+                break
+            
+            bloc.nonce += 1
+            
+            # Affichage de progression
+            if tentatives % 100000 == 0:
+                print(f"   {tentatives} tentatives...")
         
         # Ajouter la récompense au solde du mineur
         self.solde_btc += transaction_recompense.montant
