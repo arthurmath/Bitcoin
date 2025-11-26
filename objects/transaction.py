@@ -1,5 +1,6 @@
 import hashlib
 import time
+from objects.utilisateur import Utilisateur
 
 
 class Transaction:
@@ -24,7 +25,6 @@ class Transaction:
             return False
         
         # Vérifier la signature avec la clé publique
-        from objects.utilisateur import Utilisateur
         return Utilisateur.verifier_signature(self.cle_publique, self.contenu, self.signature)
     
     def to_dict(self):

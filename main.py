@@ -36,6 +36,7 @@ def main():
     bloc_genesis = mineur1.miner_bloc_genesis(bloc_genesis)
     blockchain.ajouter_bloc(bloc_genesis)
 
+
     print("\n" + "="*60)
     print("👥 Création des utilisateurs")
     print("="*60)

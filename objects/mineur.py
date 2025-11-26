@@ -49,7 +49,7 @@ class Mineur:
         print(f"🔨 {self.nom} commence le minage du bloc #{index_bloc}")
         print(f"{'='*60}")
         
-        # Créer la transaction de récompense (coinbase)
+        # Créer la transaction de récompense
         transaction_recompense = Transaction(
             expediteur_adresse="COINBASE",
             destinataire_adresse=self.adresse,
@@ -58,7 +58,7 @@ class Mineur:
         )
         
         # Calculer les frais de transaction
-        frais_totaux = sum(0.0001 for _ in transactions_en_attente)  # 0.0001 BTC par transaction
+        frais_totaux = sum(0.01 for _ in transactions_en_attente)  # 0.0001 BTC par transaction
         transaction_recompense.montant += frais_totaux
         
         # Combiner la récompense avec les transactions en attente

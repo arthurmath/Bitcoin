@@ -7,6 +7,7 @@ from objects.utilisateur import Utilisateur
 from objects.transaction import Transaction
 from objects.blockchain import Blockchain
 from objects.mineur import Mineur
+from objects.bloc import Bloc
 
 
 # Configuration de l'interface
@@ -40,8 +41,8 @@ class Animation:
 class InterfaceVisuelle:
     def __init__(self):
         pygame.init()
-        self.ecran = pygame.display.set_mode((LARGEUR, HAUTEUR))
         pygame.display.set_caption("Réseau Bitcoin - Visualisation")
+        self.ecran = pygame.display.set_mode((LARGEUR, HAUTEUR))
         self.horloge = pygame.time.Clock()
         self.font_petit = pygame.font.Font(None, 20)
         self.font_moyen = pygame.font.Font(None, 28)
@@ -176,7 +177,6 @@ class InterfaceVisuelle:
         transaction_recompense.montant += frais_totaux
         
         # Créer le bloc
-        from objects.bloc import Bloc
         toutes_transactions = [transaction_recompense] + self.transactions_bloc_actuel
         
         bloc = Bloc(
@@ -467,7 +467,7 @@ class InterfaceVisuelle:
             self.ecran.blit(texte, (20, y_stat))
             y_stat += 35
     
-    def mettre_a_jour(self, dt):
+    def update(self, dt):
         """Met à jour l'état de la simulation"""
         temps_actuel = time.time()
         
@@ -482,6 +482,11 @@ class InterfaceVisuelle:
                     # Si le bloc est plein, lancer le minage
                     if len(self.transactions_bloc_actuel) >= self.max_transactions_par_bloc:
                         self.lancer_minage_parallele()
+
+                    # # Si bloc plein et plus d'animations en cours, lancer le minage
+                    # if (len(self.transactions_bloc_actuel) >= self.max_transactions_par_bloc and 
+                    #     len(self.animation.transactions_animees) == 0):
+                    #     self.lancer_minage_parallele()
         
         # Mettre à jour les animations de transactions
         for anim_tx in self.animation.transactions_animees[:]:
@@ -534,33 +539,21 @@ class InterfaceVisuelle:
                     'progression': 0.0
                 }
     
-    def dessiner(self):
+    def draw(self):
         """Dessine tous les éléments"""
         self.ecran.fill(BLANC)
-        
-        # Titre et stats
         self.dessiner_titre_et_stats()
         
-        # Utilisateurs en cercle
         for i, (utilisateur, position) in enumerate(zip(self.utilisateurs, self.positions_utilisateurs)):
             self.dessiner_utilisateur(position, utilisateur, i)
         
-        # Transactions animées
         for anim_tx in self.animation.transactions_animees:
             self.dessiner_transaction_animee(anim_tx)
         
-        # Bloc temporaire
         self.dessiner_bloc_temporaire()
-        
-        # Mineurs
         self.dessiner_mineurs()
-        
-        # Blockchain
         self.dessiner_blockchain()
-        
-        # Animation bloc vers blockchain
         self.dessiner_animation_bloc_vers_chain()
-        
         pygame.display.flip()
     
     def run(self):
@@ -569,7 +562,6 @@ class InterfaceVisuelle:
         
         while running:
             dt = self.horloge.tick(FPS) / 1000.0
-            
             for evenement in pygame.event.get():
                 if evenement.type == pygame.QUIT:
                     running = False
@@ -577,8 +569,8 @@ class InterfaceVisuelle:
                     if evenement.key == pygame.K_ESCAPE:
                         running = False
             
-            self.mettre_a_jour(dt)
-            self.dessiner()
+            self.update(dt)
+            self.draw()
         
         # Arrêter tous les threads de minage
         self.minage_en_cours = False
