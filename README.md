@@ -1,17 +1,15 @@
 # Simulation du Réseau Bitcoin
 
-Ce repository propose une implémentation visuelle du réseau Bitcoin. L'interface est visible en éxecutant le code "interface_gemini.py". On explique ici le fonctionnement de la blockchain supportant le réseau Bitcoin.
-
-## **Signature des transactions**
-
-Pour sécuriser les transactions, la blockchain Bitcoin utilise un système de cryptographie asymétrique permettant de démontrer que l’on connaît un secret sans avoir à dévoiler ce secret. Elle est basée sur un système à **clé privée** et  **clé publique**.
+Ce projet propose une implémentation visuelle du réseau Bitcoin. L'interface est visible en éxecutant le code "interface_gemini.py". On explique ici le fonctionnement de la blockchain derrière le réseau Bitcoin (et d'autres cryptomonnaies).
 
 
-### **1. Signature numérique (ECDSA)**
+### **1. Signature numérique**
+
+Pour sécuriser les transactions, la blockchain Bitcoin utilise un système de cryptographie asymétrique permettant de démontrer que l’on connaît un secret sans avoir à dévoiler ce secret. Elle est basée sur un système à **clé privée** et **clé publique**.
 
 Chaque utilisateur possède :
 * **une clé privée** : un nombre aléatoire secret,
-* **une clé publique** : dérivée mathématiquement de la clé privée.
+* **une clé publique** : dérivée de la clé privée.
 
 Lorsqu’un utilisateur A envoie 3 BTC à un utilisateur B, on peut encoder cette transaction sous la forme du **Message** suivant : "cle_publique(A) -> 3 -> cle_publique(B)".
 
@@ -50,7 +48,9 @@ C’est ce qui rend la clé privée impossible à deviner et protège la sécuri
 ### **1. Principe du Proof of Work**
 
 Le réseau Bitcoin est sécurisé par un mécanisme de consensus appelé preuve de travail (Proof of work).
-Des milliers de serveurs (mineurs) reçoivent les transactions et tentent de produire un bloc valide en résolvant un problème cryptographique : trouver un hash suffisamment petit.
+Des milliers de serveurs (mineurs) reçoivent les transactions et tentent de produire un bloc valide en résolvant un problème cryptographique : trouver un hash suffisamment petit. 
+
+Une fonction de hachage prend une entrée du texte de taille arbitraire et produit une sortie de taille fixe. Cette sortie est déterministe (même entée = même sortie) et non reversible : il est impossible en pratique de retrouver l'entrée à partir de la sortie.
 
 
 ### **2. Rôle des mineurs**
@@ -67,7 +67,7 @@ while True:
     else:
         nonce += 1
 
-Exemple conceptuel : Cible = 0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+Exemple conceptuel : Cible = 0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF  
 Il faut trouver un hash (la cible) commençant par au moins quatre zéros (qu'importe les digits suivants). Les mineurs vont tester un grand nombre de valeurs du nonce jusqu'à ce qu'ils trouve celui qui permet d'atteindre le nombre de zéros du hash désiré. Trouver un tel hash est purement probabiliste : chaque essai a une probabilité de réussite d’environ 1 / 2^(nombre_de_bits_difficulté). Donc plus le nombre de zéros est grand, plus il faut d’essais. Le protocole Bitcoin ajuste la difficulté tous les 2016 blocs (environ toutes les deux semaines) pour maintenir un rythme d’un bloc toutes les 10 minutes en moyenne.
 
 
