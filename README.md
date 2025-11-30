@@ -48,10 +48,9 @@ Retrouver la clé privée (k) à partir de la clé publique (K) est équivalent 
 
 ### **1. Principe du Proof of Work**
 
-Une fois les transactions signées, donc authentifiées, par les utilisateurs, elles sont envoyées au réseau Bitcoin. Celui-ci est sécurisé par un mécanisme de consensus appelé preuve de travail (Proof of work).
-Des milliers de serveurs, appelés mineurs, reçoivent ces transactions, les assemblent sous forme de bloc (une liste d'environ 3000 transactions) et tentent de valider ce bloc en résolvant un problème cryptographique : trouver un hash suffisamment petit. 
+Une fois les transactions signées, donc authentifiées, par les utilisateurs, elles sont envoyées au réseau Bitcoin. Celui-ci est sécurisé par un mécanisme de consensus appelé preuve de travail (Proof of work). Des milliers de serveurs, appelés mineurs, reçoivent ces transactions, les assemblent sous forme de bloc (une liste d'environ 3000 transactions) et tentent de valider ce bloc en résolvant un problème cryptographique : trouver un hash suffisamment petit. 
 
-Une fonction de hachage prend une entrée un texte de taille arbitraire et produit une sortie de taille fixe (appelée hash). Cette sortie est déterministe (même entée = même sortie) et non reversible : il est impossible en pratique de retrouver l'entrée à partir de la sortie. La fonction de hachage utilisée par Bitcoin est appelée SHA256.
+Une fonction de hachage prend une entrée un texte de taille arbitraire et produit une sortie de taille fixe (appelée hash). Cette sortie est déterministe (même entrée = même sortie) et non reversible : il est impossible en pratique de retrouver l'entrée à partir de la sortie. La fonction de hachage utilisée par Bitcoin est appelée SHA256.
 
 Exemple : SHA256("Bonjour") = b1e0b5d7f6a7bfc7c16e8b1443c72e6b6a2
 
@@ -59,7 +58,7 @@ Exemple : SHA256("Bonjour") = b1e0b5d7f6a7bfc7c16e8b1443c72e6b6a2
 ### **2. Structure d’un bloc**
 
 Un bloc contient notamment :
-* le hash du bloc précédent H(n-1),
+* le hash du bloc précédent,
 * une liste de transactions (incluant la récompense du mineur),
 * une racine de Merkle (résumé cryptographique des transactions),
 * un champ bits (difficulté encodée),
@@ -124,4 +123,4 @@ Vous avez maintenant compris comment la Blockchain sécurise les transactions du
 
 Voici une capture d'écran de l'interface illustrant ce fonctionnement :
 
-![Interface visuelle de la simulation](screenshot.png)
+![Interface visuelle de la simulation](images/screenshot.png)
