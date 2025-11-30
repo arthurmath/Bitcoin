@@ -1,6 +1,6 @@
 # Simulation du Réseau Bitcoin
 
-Ce projet propose une implémentation du réseau Bitcoin. Une interface visuelle est aussi disponible en exécutant le code "interface_gemini.py". On explique ici le fonctionnement de la blockchain utilisée par le réseau Bitcoin et par les autres cryptomonnaies, les NFT ou tout autre système souhaitant avoir des informations vérifiables.
+Ce projet propose une implémentation du réseau Bitcoin. Une interface visuelle est aussi disponible en exécutant le code "interface_gemini.py". On explique dans ce texte le fonctionnement de la blockchain utilisée par le réseau Bitcoin et par les autres cryptomonnaies.
 
 
 ## Sécurisation des transactions
@@ -15,10 +15,10 @@ Chaque utilisateur possède :
 
 Lorsqu’un utilisateur A envoie 3 BTC à un utilisateur B, on peut encoder cette transaction sous la forme du **Message** suivant : "clé publique A -> 3 -> clé publique B".
 
-1. L'utilisateur A signe la transaction avec sa clé privée. Seul lui peut générer cette _Signature_ car il est le seul à connaitre sa clé privée.
+1. L'utilisateur A signe la transaction avec sa clé privée. Seul lui peut générer cette _Signature_ car il est le seul à connaitre sa clé privée.  
 &nbsp;→ Sign(**Message**, clé privée A) = _Signature_
 
-2. N’importe qui peut vérifier la signature d'une personne avec le message qu'elle a signé et sa clé publique.
+2. N’importe qui peut vérifier la signature d'une personne avec le message qu'elle a signé et sa clé publique.  
 &nbsp;→ Verify(**Message**, _Signature_, clé publique A) = True/False
 
 Les deux fonctions Sign et Verify sont présentes dans la classe Utilisateur du code. Cela permet de confirmer l’authenticité de la transaction à partir de la clé publique de A et donc sans révéler sa clé privée. Ce mécanisme repose sur ECDSA (Elliptic Curve Digital Signature Algorithm).
@@ -118,6 +118,10 @@ Il n'est donc pas possible de modifier un bloc au milieu de la Blockchain. Mais 
 Non, car tous les mineurs ont accès au même ensemble public de transactions valides (mempool), le mineur frauduleux ne peut donc pas inventer une transaction car le bloc ne serait pas accepté par les autres mineurs. Quand ils recoivent un nouveau bloc, en plus de vérifier son hash, ils vérifient que les transactions correspondent à celles présentes dans le mempool. Les transactions sont validées après avoir vérifié leurs signatures, que les utilisateurs possèdent assez de BTC pour faire la transaction ou qu'il ne font pas de double dépense. Il peut cependant choisir les transactions (ex : faire passer celles avec les plus gros frais), ordonner les transactions ou censurer une transaction (ne pas l’inclure).
 
 
-## Interface visuelle
+## Conclusion
+
+Vous avez maintenant compris comment la Blockchain sécurise les transactions du réseau Bitcoin. Les signatures permettant d'authentifier les transactions et le travail des mineurs vient sécuriser et rendre immuable le registre de ces transactions. La blockchain peut donc servir à authentifier n'importe quelle information, elle est aussi utilisée par les NFT, les RWA (Real World Asset), pour certifier son diplome par son école ou par tout autre système souhaitant avoir des informations vérifiables.
+
+Voici une capture d'écran de l'interface illustrant ce fonctionnement :
 
 ![Interface visuelle de la simulation](screenshot.png)
