@@ -7,7 +7,7 @@ Ce projet propose une implémentation du réseau Bitcoin. Une interface visuelle
 
 ### **1. Signature numérique**
 
-Pour sécuriser les transactions, la blockchain Bitcoin utilise un système de cryptographie asymétrique permettant de démontrer que l’on connaît un secret sans avoir à le dévoiler. Elle est basée sur un système à clé privée et publique. Celle-ci permet de vérifier des transactions pair à pair de manière décentralisé, donc sans entitée unique controlant toutes les transactions (comme Visa ou Mastercard). 
+Pour sécuriser les transactions, la blockchain Bitcoin utilise un système de cryptographie asymétrique permettant de démontrer que l’on connaît un secret sans avoir à le dévoiler. Elle est basée sur un système à clé privée et publique. Celle-ci permet de vérifier des transactions pair à pair de manière décentralisé, donc sans entitée unique controlant toutes les transactions. Elle permet donc de faire des transactions sans devoir passer par un intermédiaire comme Visa ou Mastercard, qui prennent une commision sur chaque transaction.
 
 Chaque utilisateur possède :
 * **une clé privée** : un nombre aléatoire secret,
@@ -35,7 +35,6 @@ avec :
 * G = point générateur de la courbe,
 * × = multiplication de point sur la courbe elliptique.
 
-
 Bitcoin utilise la courbe elliptique secp256k1, définie par : y^2 = x^3 + 7 mod p
 où p est un nombre premier très grand : 2^256 − 2^32 − 977 
 
@@ -48,9 +47,9 @@ Retrouver la clé privée (k) à partir de la clé publique (K) est équivalent 
 
 ### **1. Principe du Proof of Work**
 
-Une fois les transactions signées, donc authentifiées, par les utilisateurs, elles sont envoyées au réseau Bitcoin. Celui-ci est sécurisé par un mécanisme de consensus appelé preuve de travail (Proof of work). Des milliers de serveurs, appelés mineurs, reçoivent ces transactions, les assemblent sous forme de bloc (une liste d'environ 3000 transactions) et tentent de valider ce bloc en résolvant un problème cryptographique : trouver un hash suffisamment petit. 
+Une fois les transactions signées, donc authentifiées par les utilisateurs, elles sont envoyées au réseau Bitcoin. Celui-ci est sécurisé par un mécanisme de consensus appelé preuve de travail (Proof of work). Des milliers de serveurs, appelés mineurs, reçoivent ces transactions, les assemblent sous forme de bloc (une liste d'environ 3000 transactions) et tentent de valider ce bloc en résolvant un problème cryptographique : trouver un hash suffisamment petit. 
 
-Une fonction de hachage prend une entrée un texte de taille arbitraire et produit une sortie de taille fixe (appelée hash). Cette sortie est déterministe (même entrée = même sortie) et non reversible : il est impossible en pratique de retrouver l'entrée à partir de la sortie. La fonction de hachage utilisée par Bitcoin est appelée SHA256.
+Une fonction de hachage prend une entrée un texte de taille arbitraire et produit une sortie de taille fixe, un nombre hexadécimal appelé hash. Cette sortie est déterministe (même entrée = même sortie) et non reversible : il est impossible en pratique de retrouver l'entrée à partir de la sortie. La fonction de hachage utilisée par Bitcoin est appelée SHA256.
 
 Exemple : SHA256("Bonjour") = b1e0b5d7f6a7bfc7c16e8b1443c72e6b6a2
 
@@ -65,12 +64,12 @@ Un bloc contient notamment :
 * un timestamp,
 * un nonce.
 
-Ces informations sont condensées dans un résumé, appelé header du bloc, qui a la forme suivante : "version | hash_bloc_précédent | racine_Merkle |  timestamp | bits | nonce". 
+Ces informations sont condensées dans un résumé, appelé header du bloc, qui a la forme suivante : "version | hash_bloc_précédent | racine_Merkle |  timestamp | bits | nonce". Chaque bloc contient donc l'information condensée du bloc précédent, qui lui même contient celle du bloc précédent etc. Cela forme donc une chaine de blocs tous liés les uns aux autres, ou blockchain. Si l'on change une information dans un bloc, on brise toute la chaine, et cela permet d'authentifier toutes les informations qui y sont présentes (cf. partie 5).
 
 
 ### **3. Rôle des mineurs**
 
-Les mineurs font varier un nombre, le nonce, présent dans le header puis calculent le hash du header pour qu'il respecte la cible de difficulté. La fonction SHA256 est utilisée deux fois pour plus de sécurité.
+Les mineurs font varier un nombre, le nonce, présent dans le header du bloc puis calculent le hash de ce header pour qu'il respecte la cible de difficulté. La fonction SHA256 est utilisée deux fois pour plus de sécurité.
 
 La condition à satisfaire est : SHA256(SHA256(header du bloc)) < cible
 
@@ -83,21 +82,30 @@ while True:
 &nbsp;&nbsp;nonce += 1  
 
 Exemple : cible = 0000FFFFFFFFFFFFFFFFFFFFFFFFFFFF 
-Il faut trouver un hash commençant par au moins quatre zéros (qu'importe les digits suivants). Les mineurs vont tester un grand nombre de valeurs du nonce jusqu'à ce qu'ils trouve celui qui permet d'atteindre le nombre de zéros du hash désiré. Trouver un tel hash est purement probabiliste : chaque essai a une probabilité de réussite d’environ 1 / 2^(nombre_de_zéros). Donc plus le nombre de zéros est grand, plus il faut d’essais. Le protocole Bitcoin ajuste la difficulté tous les 2016 blocs (environ toutes les deux semaines) pour maintenir un rythme d’un bloc toutes les 10 minutes en moyenne.
+Il faut trouver un hash commençant par au moins quatre zéros (qu'importe les digits suivants). Les mineurs vont tester un grand nombre de valeurs du nonce jusqu'à ce qu'ils trouvent celui qui permet d'atteindre le nombre de zéros du hash désiré. Trouver un tel hash est purement probabiliste : chaque essai a une probabilité de réussite d’environ 1 / 2^(nombre_de_zéros). Donc plus le nombre de zéros est grand, plus il faut d’essais. Le protocole Bitcoin ajuste la difficulté tous les 2016 blocs (environ toutes les deux semaines) pour maintenir un rythme d’un bloc toutes les 10 minutes en moyenne.
 
 
 ### **4. Validation et récompense**
 
-Lorsqu’un mineur trouve un bloc valide, il le diffuse au réseau. Il est ensuite facile pour les autres mineurs de vérifier que ce nonce est correct, et que donc ce bloc a été validé.
+Il y a donc une compétition entre tous les mineurs du monde pour trouver le hash valide du bloc en cours. Lorsqu’un mineur trouve un hash valide, il  diffuse le bloc au reste du réseau. Il est ensuite facile pour les autres mineurs de vérifier que le nonce est correct, et que donc ce bloc a été validé.
 
 Le mineur reçoit alors :
 * la **récompense de bloc** (3,125 BTC depuis le halving de 2024),
 * les **frais de transaction** inclus dans ce bloc (de l'ordre de 0.00001 BTC).
 
+Le halving est un évènement encodé dans le protocol Bitcoin s'exécutant de manière automatique pour diviser par deux le nombre de bitcoins créés lors du minage. Le dernier bitcoin crée le sera en 2140 environ, pour un total final de 21M BTC émis.
+
+* 2009 : 50 BTC
+* 2012 : 25 BTC
+* 2016 : 12.5 BTC
+* 2020 : 6.25 BTC
+* 2024 : 3.12 BTC
+* 2028 : 1.56 BTC
+
 
 ### **5. Comment cela garantit la sécurité**
 
-Le Proof of Work rend les attaques énergétiquement coûteuses. Voyons deux exemples : une tentative de falsification d'un bloc déjà inscrit dans la Blockchain et du dernier bloc en cours de minage. Tout d'abord, il n'est pas possible d'enregistrer une transaction d'un utilisateur X vers soi, car il faudrait sa clé privée pour signer la transaction. Il est cependant possible de modifier une transaction faite par soi-meme vers quelqu'un d'autre. Par exemple, j'ai acheté une moto pour 2 BTC, puis je modifie cette transaction après pour n'avoir envoyé que 1 BTC.
+Le Proof of Work rend les attaques énergétiquement coûteuses. Voyons deux exemples : une tentative de falsification d'un bloc déjà inscrit dans la blockchain et du dernier bloc en cours de minage. Tout d'abord, il n'est pas possible d'enregistrer une transaction d'un utilisateur X vers soi, car il faudrait sa clé privée pour signer la transaction. Il est cependant possible de modifier une transaction faite soi-meme vers quelqu'un d'autre. Par exemple, j'ai acheté une moto pour 2 BTC, puis je modifie cette transaction après pour n'avoir envoyé que 1 BTC.
 
 
 #### Tentative de modification d'un bloc déjà validé
@@ -112,14 +120,15 @@ Mais pendant ce temps, le reste du réseau continue d’avancer. Modifier un blo
 
 #### Tentative de modification du dernier bloc
 
-Il n'est donc pas possible de modifier un bloc au milieu de la Blockchain. Mais si le mineur frauduleux essaie de modifier le bloc actuel en cours de minage (le dernier bloc de la Blockchain, validé toutes les 10min) et qu'il arrive à trouver un hash valide avant les autres mineurs, est ce qu'il peut l'envoyer aux autres mineurs pour qu'il soit accepté ? 
+Il n'est donc pas possible de modifier un bloc au milieu de la Blockchain. Mais si le mineur frauduleux essaie de modifier le bloc actuel en cours de minage (le dernier bloc de la Blockchain) et qu'il arrive à trouver un hash valide avant les autres mineurs, est ce qu'il peut l'envoyer aux autres mineurs pour qu'il soit accepté ? 
 
-Non, car tous les mineurs ont accès au même ensemble public de transactions valides (mempool), le mineur frauduleux ne peut donc pas inventer une transaction car le bloc ne serait pas accepté par les autres mineurs. Quand ils recoivent un nouveau bloc, en plus de vérifier son hash, ils vérifient que les transactions correspondent à celles présentes dans le mempool. Les transactions sont validées après avoir vérifié leurs signatures, que les utilisateurs possèdent assez de BTC pour faire la transaction ou qu'il ne font pas de double dépense. Il peut cependant choisir les transactions (ex : faire passer celles avec les plus gros frais), ordonner les transactions ou censurer une transaction (ne pas l’inclure).
+Non, car tous les mineurs ont accès au même ensemble public de transactions valides, appelé mempool (pour memory pool), le mineur frauduleux ne peut donc pas inventer une transaction car le bloc ne serait pas accepté par les autres mineurs. Quand ils recoivent un nouveau bloc, en plus de vérifier son hash, ils vérifient que les transactions correspondent à celles présentes dans le mempool. Les transactions sont validées après avoir vérifié leurs signatures, que les utilisateurs possèdent assez de BTC pour faire la transaction ou qu'ils ne font pas de double dépense. Il peut cependant choisir les transactions (ex : faire passer celles avec les plus gros frais), ordonner les transactions ou censurer une transaction (ne pas l’inclure).
+
 
 
 ## Conclusion
 
-Vous avez maintenant compris comment la Blockchain sécurise les transactions du réseau Bitcoin. Les signatures permettant d'authentifier les transactions et le travail des mineurs vient sécuriser et rendre immuable le registre de ces transactions. La blockchain peut donc servir à authentifier n'importe quelle information, elle est aussi utilisée par les NFT, les RWA (Real World Asset), pour certifier son diplome par son école ou par tout autre système souhaitant avoir des informations vérifiables.
+Vous avez maintenant compris comment la Blockchain sécurise les transactions du réseau Bitcoin. Les signatures permettent d'authentifier les transactions et le travail des mineurs sécurise et rends immuable le registre de ces transactions. La blockchain peut servir à authentifier n'importe quelle information, elle est aussi utilisée par les NFT (Non Fungible Token, associé à un objet unique comme une image, opposé aux bitcoins qui sont des tokens interchangeables, donc fongibles), les RWA (Real World Asset), pour certifier son diplome par son école ou pour tout autre système souhaitant avoir des informations vérifiables.
 
 Voici une capture d'écran de l'interface illustrant ce fonctionnement :
 
