@@ -49,7 +49,7 @@ Retrouver la clé privée (k) à partir de la clé publique (K) est équivalent 
 
 Une fois les transactions signées, donc authentifiées par les utilisateurs, elles sont envoyées au réseau Bitcoin. Celui-ci est sécurisé par un mécanisme de consensus appelé preuve de travail (Proof of work). Des milliers de serveurs, appelés mineurs, reçoivent ces transactions, les assemblent sous forme de bloc (une liste d'environ 3000 transactions) et tentent de valider ce bloc en résolvant un problème cryptographique : trouver un hash suffisamment petit. 
 
-Une fonction de hachage prend une entrée un texte de taille arbitraire et produit une sortie de taille fixe, un nombre hexadécimal appelé hash. Cette sortie est déterministe (même entrée = même sortie) et non reversible : il est impossible en pratique de retrouver l'entrée à partir de la sortie. La fonction de hachage utilisée par Bitcoin est appelée SHA256.
+Une fonction de hachage prend une entrée un texte de taille arbitraire et produit une sortie de taille fixe, un nombre hexadécimal appelé hash. Cette sortie est déterministe (même entrée = même sortie) et non reversible : il est impossible de retrouver l'entrée à partir de la sortie. La fonction de hachage utilisée par Bitcoin est appelée SHA256.
 
 Exemple : SHA256("Bonjour") = b1e0b5d7f6a7bfc7c16e8b1443c72e6b6a2
 
@@ -64,7 +64,7 @@ Un bloc contient notamment :
 * un timestamp,
 * un nonce.
 
-Ces informations sont condensées dans un résumé, appelé header du bloc, qui a la forme suivante : "version | hash_bloc_précédent | racine_Merkle |  timestamp | bits | nonce". Chaque bloc contient donc l'information condensée du bloc précédent, qui lui même contient celle du bloc précédent etc. Cela forme donc une chaine de blocs tous liés les uns aux autres, ou blockchain. Si l'on change une information dans un bloc, on brise toute la chaine, et cela permet d'authentifier toutes les informations qui y sont présentes (cf. partie 5).
+Ces informations sont condensées dans un résumé, appelé header du bloc, qui a la forme suivante : "version | hash_bloc_précédent | racine_Merkle |  timestamp | bits | nonce". Chaque bloc contient donc l'information condensée du bloc précédent, qui lui même contient celle du bloc précédent etc. Cela forme donc une chaine de blocs tous liés les uns aux autres, ou en anglais "Blockchain". Si l'on change une information dans un bloc, on brise toute la chaine, ce qui permet d'authentifier toutes les informations qui y sont présentes.
 
 
 ### **3. Rôle des mineurs**
@@ -87,9 +87,9 @@ Il faut trouver un hash commençant par au moins quatre zéros (qu'importe les d
 
 ### **4. Validation et récompense**
 
-Il y a donc une compétition entre tous les mineurs du monde pour trouver le hash valide du bloc en cours. Lorsqu’un mineur trouve un hash valide, il  diffuse le bloc au reste du réseau. Il est ensuite facile pour les autres mineurs de vérifier que le nonce est correct, et que donc ce bloc a été validé.
+Il y a donc une compétition entre tous les mineurs du monde pour trouver le hash valide du bloc en cours. Lorsqu’un mineur trouve un hash valide, il  diffuse le bloc au reste du réseau, il est ajouté à la blockchain. Il est ensuite facile pour les autres mineurs de vérifier que le nonce est correct, et que donc ce bloc a été validé.
 
-Le mineur reçoit alors :
+Le mineur gagant reçoit alors :
 * la **récompense de bloc** (3,125 BTC depuis le halving de 2024),
 * les **frais de transaction** inclus dans ce bloc (de l'ordre de 0.00001 BTC).
 
@@ -115,7 +115,7 @@ Si un attaquant veut modifier un bloc déjà inscrit dans la Blockchain :
 &nbsp;Donc le lien avec le bloc suivant devient invalide car il contient le hash du bloc précédent.
 &nbsp;Il doit recalculer les hashs de tous les blocs suivants pour rattraper la chaîne honnête.
 
-Mais pendant ce temps, le reste du réseau continue d’avancer. Modifier un bloc impliquerait de refaire tout ce calcul pour ce bloc et tous les suivants. Les mineurs suivent toujours la chaîne avec le plus de travail accumulé (total difficulty), donc la chaîne la plus longue. L’attaquant devrait donc disposer de > 50% de la puissance de calcul totale pour espérer rattraper et dépasser la chaîne valide, c’est la fameuse attaque des 51%, en pratique impossible à mener à grande échelle.
+Mais pendant ce temps, le reste du réseau continue d’avancer. Modifier un bloc impliquerait de refaire tout ce calcul pour ce bloc et tous les suivants. Les mineurs suivent toujours la chaîne la chaîne la plus longue, donc la chaine avec le plus de travail réalisé. La chaine honnête est toujours la plus longue chaine car c'est celle qui a accumulé le plus de travail. L’attaquant devrait donc disposer de > 50% de la puissance de calcul totale pour espérer rattraper et dépasser la chaîne honnête, c’est la fameuse attaque des 51%, en pratique impossible à mener à grande échelle. 
 
 
 #### Tentative de modification du dernier bloc
