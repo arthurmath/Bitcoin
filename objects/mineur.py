@@ -1,36 +1,44 @@
 from objects.bloc import Bloc
 from objects.transaction import Transaction
+from objects.utilisateur import Utilisateur
+import hashlib
 
 
 class Mineur:
-    def __init__(self, nom, adresse):
+    def __init__(self, nom=None, adresse=None, difficulte=1):
         self.nom = nom
         self.adresse = adresse
         self.solde_btc = 0.0
+        self.difficulte = difficulte
+
+    def calculer_hash(self, header):
+        """
+        Calcule le hash du bloc avec double SHA256
+        SHA256(SHA256(header))
+        """
+        hash1 = hashlib.sha256(header).digest()
+        hash2 = hashlib.sha256(hash1).hexdigest()
+        return hash2
     
     def miner_bloc_genesis(self, bloc_genesis):
         """
         Mine le bloc genesis (sans transaction coinbase)
         """
-        print(f"\n{'='*60}")
-        print(f"🔨 {self.nom} mine le bloc genesis")
-        print(f"{'='*60}")
         
-        # Miner le bloc genesis (Proof of Work)
         cible = '0' * bloc_genesis.difficulte
-        print(f"\n⛏️  Mining bloc genesis... (difficulté: {bloc_genesis.difficulte} zéros)")
-        
         tentatives = 0
+        nonce = 0
         while True:
-            bloc_genesis.hash = bloc_genesis.calculer_hash()
-            tentatives += 1
+            header = bloc_genesis.header(nonce)
+            hash = self.calculer_hash(header)
             
-            if bloc_genesis.hash.startswith(cible):
-                print(f"✅ Bloc genesis miné ! Hash: {bloc_genesis.hash}")
-                print(f"   Nonce trouvé: {bloc_genesis.nonce} après {tentatives} tentatives")
+            if hash.startswith(cible):
+                bloc_genesis.hash = hash
+                print(f"  Bloc genesis miné ! Hash: {bloc_genesis.hash[:20]}... Nonce: {nonce}")
                 break
             
-            bloc_genesis.nonce += 1
+            tentatives += 1
+            nonce += 1
             
             if tentatives % 100000 == 0:
                 print(f"   {tentatives} tentatives...")
@@ -45,13 +53,10 @@ class Mineur:
         3. Résout le problème de Proof of Work
         4. Retourne le bloc validé
         """
-        print(f"\n{'='*60}")
-        print(f"🔨 {self.nom} commence le minage du bloc #{index_bloc}")
-        print(f"{'='*60}")
         
         # Créer la transaction de récompense
         transaction_recompense = Transaction(
-            expediteur_adresse="COINBASE",
+            expediteur_adresse="RECOMPENSE",
             destinataire_adresse=self.adresse,
             montant=recompense,
             cle_publique_expediteur="SYSTEM"
@@ -63,10 +68,7 @@ class Mineur:
         
         # Combiner la récompense avec les transactions en attente
         toutes_transactions = [transaction_recompense] + transactions_en_attente
-        
-        print(f"📦 Transactions dans le bloc: {len(toutes_transactions)}")
-        print(f"   - 1 transaction coinbase: {recompense + frais_totaux} BTC")
-        print(f"   - {len(transactions_en_attente)} transactions utilisateurs")
+
         
         # Créer le bloc
         bloc = Bloc(
@@ -78,7 +80,7 @@ class Mineur:
         
         # Miner le bloc (Proof of Work)
         cible = '0' * difficulte
-        print(f"\n⛏️  Mining bloc {bloc.index}... (difficulté: {difficulte} zéros)")
+        print(f"\n⛏️  Minage en cours {bloc.index}... (difficulté: {difficulte} zéros)")
         
         tentatives = 0
         while True:
@@ -87,8 +89,7 @@ class Mineur:
             
             # Vérifier si le hash commence par le nombre requis de zéros
             if bloc.hash.startswith(cible):
-                print(f"✅ Bloc miné ! Hash: {bloc.hash}")
-                print(f"   Nonce trouvé: {bloc.nonce} après {tentatives} tentatives")
+                print(f"✅ Bloc miné ! Hash: {bloc.hash[:20]}..., Nonce: {bloc.nonce}")
                 break
             
             bloc.nonce += 1
@@ -100,27 +101,27 @@ class Mineur:
         # Ajouter la récompense au solde du mineur
         self.solde_btc += transaction_recompense.montant
         
-        print(f"💰 {self.nom} a reçu {transaction_recompense.montant} BTC")
-        print(f"   Nouveau solde: {self.solde_btc} BTC")
-        
         return bloc
     
-    def valider_bloc(self, bloc):
+    def valider(self, bloc: Bloc):
         """
-        Valide un bloc miné par un autre mineur
+        Valide un bloc déjà miné
         Vérifie :
         - Le hash du bloc est correct
         - Toutes les transactions sont valides
         - Le Proof of Work est satisfait
         """
-        print(f"\n🔍 {self.nom} valide le bloc #{bloc.index}...")
-        
-        if not bloc.est_valide():
-            print(f"❌ Bloc invalide !")
+        print(f"\n🔍 Validation du bloc #{bloc.index}...")
+        cible = '0' * self.difficulte
+        if not bloc.hash.startswith(cible):
             return False
-        
-        print(f"✅ Bloc validé par {self.nom}")
-        return True
+
+        for tx in bloc.transactions:
+            if tx.expediteur in ["RECOMPENSE", "GENESIS"]:
+                continue
+            if not Utilisateur.verifier_signature(tx.cle_publique, tx.contenu, tx.signature):
+                return False 
+        return True 
     
     def afficher_info(self):
         """Affiche les informations du mineur"""

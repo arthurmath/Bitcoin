@@ -1,5 +1,6 @@
 from objects.bloc import Bloc
 from objects.transaction import Transaction
+from objects.mineur import Mineur
 
 
 class Blockchain:
@@ -57,69 +58,36 @@ class Blockchain:
         """Ajoute un bloc à la chaîne après validation"""
         # Si c'est le premier bloc (genesis), on vérifie juste qu'il est valide
         if len(self.chaine) == 0:
-            if bloc.est_valide() and bloc.index == 0:
+            if Mineur().valider(bloc) and bloc.index == 0:
                 self.chaine.append(bloc)
                 # Initialiser le bloc temporaire maintenant qu'on a le bloc genesis
                 self._initialiser_bloc_temporaire()
-                print(f"✅ Bloc genesis ajouté à la blockchain: {bloc}")
+                print(f"✅ Bloc genesis ajouté à la blockchain: {bloc}\n")
                 return True
             else:
                 print(f"❌ Bloc genesis invalide, rejeté")
                 return False
         # Pour les blocs suivants, vérifier le chaînage
-        elif bloc.est_valide() and bloc.hash_precedent == self.chaine[-1].hash:
+        elif Mineur().valider(bloc) and bloc.hash_precedent == self.chaine[-1].hash:
             self.chaine.append(bloc)
             # Vider les transactions en attente qui ont été incluses
             self.transactions_en_attente = []
             # Réinitialiser le bloc temporaire
             self._initialiser_bloc_temporaire()
-            print(f"✅ Bloc ajouté à la blockchain: {bloc}")
+            print(f"\n✅ Bloc ajouté à la blockchain: {bloc}\n")
             return True
         else:
-            print(f"❌ Bloc invalide, rejeté")
+            print(f"\n❌ Bloc invalide, rejeté\n")
             return False
     
-    def valider_chaine(self):
-        """Vérifie l'intégrité de toute la blockchain"""
-        print("\n🔍 Validation de la blockchain...")
-        
-        for i in range(1, len(self.chaine)):
-            bloc_actuel = self.chaine[i]
-            bloc_precedent = self.chaine[i-1]
-            
-            # Vérifier que le bloc est valide
-            if not bloc_actuel.est_valide():
-                print(f"❌ Bloc #{i} invalide")
-                return False
-            
-            # Vérifier le chaînage
-            if bloc_actuel.hash_precedent != bloc_precedent.hash:
-                print(f"❌ Chaînage rompu au bloc #{i}")
-                return False
-        
-        print(f"✅ Blockchain valide ({len(self.chaine)} blocs)")
-        return True
-    
-    # def calculer_solde(self, adresse):
-    #     """Calcule le solde d'une adresse en parcourant toute la blockchain"""
-    #     solde = 0.0
-        
-    #     for bloc in self.chaine:
-    #         for transaction in bloc.transactions:
-    #             if transaction.destinataire == adresse:
-    #                 solde += transaction.montant
-    #             if transaction.expediteur == adresse:
-    #                 solde -= transaction.montant
-        
-    #     return solde
-    
+
     def sauvegarder(self, fichier='blockchain.txt'):
         """Sauvegarde la blockchain dans un fichier texte"""
         print(f"\n💾 Sauvegarde de la blockchain dans {fichier}...")
         
         with open(fichier, 'w', encoding='utf-8') as f:
             f.write("="*80 + "\n")
-            f.write("BLOCKCHAIN BITCOIN - SIMULATION\n")
+            f.write("BLOCKCHAIN BITCOIN\n")
             f.write("="*80 + "\n\n")
             
             for bloc in self.chaine:
@@ -145,17 +113,44 @@ class Blockchain:
                         f.write(f"  Signature: {tx.signature[:50]}...\n")
                 f.write("\n")
         
-        print(f"✅ Blockchain sauvegardée ({len(self.chaine)} blocs)")
+        print(f"✅ Blockchain sauvegardée")
     
-    def afficher_resume(self):
-        """Affiche un résumé de la blockchain"""
-        print("\n" + "="*60)
-        print("📊 RÉSUMÉ DE LA BLOCKCHAIN")
-        print("="*60)
-        print(f"Nombre de blocs: {len(self.chaine)}")
-        print(f"Difficulté: {self.difficulte}")
-        print(f"Transactions en attente: {len(self.transactions_en_attente)}")
-        print("\nDerniers blocs:")
-        for bloc in self.chaine[-3:]:
-            print(f"  - {bloc}")
 
+
+
+
+
+    # def valider_chaine(self):
+    #     """Vérifie l'intégrité de toute la blockchain"""
+    #     print("\n🔍 Validation de la blockchain...")
+        
+    #     for i in range(1, len(self.chaine)):
+    #         bloc_actuel = self.chaine[i]
+    #         bloc_precedent = self.chaine[i-1]
+            
+    #         # Vérifier que le bloc est valide
+    #         if not bloc_actuel.est_valide():
+    #             print(f"\n❌ Bloc #{i} invalide")
+    #             return False
+            
+    #         # Vérifier le chaînage
+    #         if bloc_actuel.hash_precedent != bloc_precedent.hash:
+    #             print(f"\n❌ Chaînage rompu au bloc #{i}")
+    #             return False
+        
+    #     print(f"\n✅ Blockchain valide ({len(self.chaine)} blocs)\n")
+    #     return True
+    
+    # def calculer_solde(self, adresse):
+    #     """Calcule le solde d'une adresse en parcourant toute la blockchain"""
+    #     solde = 0.0
+        
+    #     for bloc in self.chaine:
+    #         for transaction in bloc.transactions:
+    #             if transaction.destinataire == adresse:
+    #                 solde += transaction.montant
+    #             if transaction.expediteur == adresse:
+    #                 solde -= transaction.montant
+        
+    #     return solde
+    

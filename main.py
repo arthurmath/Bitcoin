@@ -118,7 +118,7 @@ def main():
     
     for mineur in mineurs:
         if mineur != mineur_choisi:
-            mineur.valider_bloc(bloc)
+            mineur.valider(bloc, difficulte)
     
     # Ajouter le bloc à la blockchain
     blockchain.ajouter_bloc(bloc)
@@ -166,10 +166,6 @@ def main():
     blockchain.ajouter_bloc(bloc)
 
 
-    
-    # Validation de la blockchain
-    blockchain.valider_chaine()
-
 
 
 
@@ -187,16 +183,12 @@ def main():
     for mineur in mineurs:
         print(f"  {mineur.nom}: {mineur.solde_btc:.2f} BTC")
     
-    # Résumé de la blockchain
-    blockchain.afficher_resume()
-    
     # Sauvegarde de la blockchain
     blockchain.sauvegarder('blockchain.txt')
     
     print("\n" + "="*80)
     print("✅ SIMULATION TERMINÉE")
     print("="*80)
-    print("\n📄 La blockchain a été sauvegardée dans 'blockchain.txt'")
 
 
 if __name__ == "__main__":

@@ -191,7 +191,7 @@ class VisualBlockchain:
             """Fonction de minage pour un thread"""
             # Créer la transaction coinbase
             transaction_recompense = Transaction(
-                expediteur_adresse="COINBASE",
+                expediteur_adresse="RECOMPENSE",
                 destinataire_adresse=mineur.adresse,
                 montant=self.recompense_bloc,
                 cle_publique_expediteur="SYSTEM"

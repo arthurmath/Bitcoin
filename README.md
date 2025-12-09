@@ -81,7 +81,7 @@ while True:
 &nbsp;else:  
 &nbsp;&nbsp;nonce += 1  
 
-Exemple : cible = 0000FFFFFFFFFFFFFFFFFFFFFFFFFFFF 
+Exemple : cible = 0000FFFFFFFFFFFFFFFFFFFFFFFFFFFF  
 Il faut trouver un hash commençant par au moins quatre zéros (qu'importe les digits suivants). Les mineurs vont tester un grand nombre de valeurs du nonce jusqu'à ce qu'ils trouvent celui qui permet d'atteindre le nombre de zéros du hash désiré. Trouver un tel hash est purement probabiliste : chaque essai a une probabilité de réussite d’environ 1 / 2^(nombre_de_zéros). Donc plus le nombre de zéros est grand, plus il faut d’essais. Le protocole Bitcoin ajuste la difficulté tous les 2016 blocs (environ toutes les deux semaines) pour maintenir un rythme d’un bloc toutes les 10 minutes en moyenne.
 
 

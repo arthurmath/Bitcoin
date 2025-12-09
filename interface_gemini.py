@@ -166,7 +166,7 @@ class InterfaceVisuelle:
         """Thread de minage pour un mineur"""
         # Créer la transaction de récompense
         transaction_recompense = Transaction(
-            expediteur_adresse="COINBASE",
+            expediteur_adresse="RECOMPENSE",
             destinataire_adresse=mineur.adresse,
             montant=self.recompense_bloc,
             cle_publique_expediteur="SYSTEM"
@@ -189,13 +189,15 @@ class InterfaceVisuelle:
         # Miner (Proof of Work)
         cible = '0' * self.difficulte
         tentatives = 0
+        nonce = 0
         
         while self.minage_en_cours:
-            bloc.hash = bloc.calculer_hash()
-            tentatives += 1
-            
-            if bloc.hash.startswith(cible):
+            header = bloc.header(nonce)
+            hash = mineur.calculer_hash(header)
+        
+            if hash.startswith(cible):
                 # Succès !
+                bloc.hash = hash
                 with self.minage_lock:
                     if self.minage_en_cours:
                         self.minage_en_cours = False
@@ -209,7 +211,7 @@ class InterfaceVisuelle:
                         self.animation.mineur_gagnant_timer = time.time()
                 break
             
-            bloc.nonce += 1
+            nonce += 1
     
     def dessiner_utilisateur(self, position, utilisateur, index):
         """Dessine un utilisateur"""
