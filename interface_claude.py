@@ -129,7 +129,7 @@ class VisualBlockchain:
         # Créer la blockchain
         self.blockchain = Blockchain(difficulte=self.difficulte)
         bloc_genesis = self.blockchain.creer_bloc_genesis(self.utilisateurs)
-        bloc_genesis = self.mineurs[0].miner_bloc_genesis(bloc_genesis)
+        bloc_genesis = self.mineurs[0].miner_bloc(bloc_genesis)
         self.blockchain.ajouter_bloc(bloc_genesis)
     
     def _calculer_position_utilisateur(self, index):

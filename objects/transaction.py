@@ -15,27 +15,6 @@ class Transaction:
 
 
     def __str__(self):
-        return f"{self.expediteur[:10]}... -> {self.destinataire[:10]}... : {self.montant} BTC"
+        return f"Transaction : {self.expediteur[:10]}... -> {self.destinataire[:10]}... : {self.montant} BTC"
 
-
-
-
-
-
-
-
-
-
-    # def to_dict(self):
-    #     """Convertit la transaction en dictionnaire"""
-    #     return {
-    #         'expediteur': self.expediteur,
-    #         'destinataire': self.destinataire,
-    #         'montant': self.montant,
-    #         'cle_publique': self.cle_publique,
-    #         'timestamp': self.timestamp,
-    #         'signature': self.signature,
-    #         'hash': self.hash_transaction
-    #     }
-    
 

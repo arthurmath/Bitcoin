@@ -1,6 +1,5 @@
 from objects.bloc import Bloc
 from objects.transaction import Transaction
-from objects.mineur import Mineur
 
 
 class Blockchain:
@@ -17,31 +16,21 @@ class Blockchain:
         print("🌟 Création du bloc Genesis")
         print("="*60)
         
-        # Si des utilisateurs sont fournis, créer des transactions Genesis pour chacun
-        if utilisateurs:
-            for user in utilisateurs:
-                transaction_genesis = Transaction(
-                    expediteur_adresse="GENESIS",
-                    destinataire_adresse=user.adresse,
-                    montant=user.solde_btc,
-                    cle_publique_expediteur="SYSTEM"
-                )
-        else:
-            # Transaction genesis par défaut si aucun utilisateur
-            transaction_genesis = Transaction(
-                expediteur_adresse="GENESIS",
-                destinataire_adresse="GENESIS",
-                montant=0,
-                cle_publique_expediteur="SYSTEM"
-            )
+        # Transactions Genesis permettent d'initialiser les soldes des utilisateurs
+        transactions_genesis = [Transaction(
+            expediteur_adresse="GENESIS",
+            destinataire_adresse=user.adresse,
+            montant=user.solde_btc,
+            cle_publique_expediteur="SYSTEM"
+        ) for user in utilisateurs]
          
         bloc_genesis = Bloc(
             index=0,
-            transactions=[transaction_genesis],
+            transactions=transactions_genesis,
             hash_precedent="0" * 64,
             difficulte=self.difficulte
         )
-        
+
         return bloc_genesis
     
     def _initialiser_bloc_temporaire(self):
@@ -56,29 +45,12 @@ class Blockchain:
     
     def ajouter_bloc(self, bloc):
         """Ajoute un bloc à la chaîne après validation"""
-        # Si c'est le premier bloc (genesis), on vérifie juste qu'il est valide
-        if len(self.chaine) == 0:
-            if Mineur().valider(bloc) and bloc.index == 0:
-                self.chaine.append(bloc)
-                # Initialiser le bloc temporaire maintenant qu'on a le bloc genesis
-                self._initialiser_bloc_temporaire()
-                print(f"✅ Bloc genesis ajouté à la blockchain: {bloc}\n")
-                return True
-            else:
-                print(f"❌ Bloc genesis invalide, rejeté")
-                return False
-        # Pour les blocs suivants, vérifier le chaînage
-        elif Mineur().valider(bloc) and bloc.hash_precedent == self.chaine[-1].hash:
-            self.chaine.append(bloc)
-            # Vider les transactions en attente qui ont été incluses
-            self.transactions_en_attente = []
-            # Réinitialiser le bloc temporaire
-            self._initialiser_bloc_temporaire()
-            print(f"\n✅ Bloc ajouté à la blockchain: {bloc}\n")
-            return True
-        else:
-            print(f"\n❌ Bloc invalide, rejeté\n")
-            return False
+        self.chaine.append(bloc)
+        # Vider le mempool
+        self.transactions_en_attente = []
+        # Réinitialiser le bloc temporaire
+        self._initialiser_bloc_temporaire()
+        print(f"✅ Bloc ajouté à la blockchain: {bloc}\n")
     
 
     def sauvegarder(self, fichier='blockchain.txt'):

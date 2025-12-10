@@ -22,7 +22,7 @@ class Utilisateur:
         """Génère une adresse Bitcoin simplifiée à partir de la clé publique"""
         cle_pub_bytes = self.cle_publique.to_string()
         hash_cle = hashlib.sha256(cle_pub_bytes).hexdigest()
-        return hash_cle[:40]  # Adresse simplifiée
+        return hash_cle[:40]
     
     def signe(self, transaction):
         """

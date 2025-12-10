@@ -68,7 +68,7 @@ class InterfaceVisuelle:
         # Créer la blockchain
         self.blockchain = Blockchain(difficulte=2)
         bloc_genesis = self.blockchain.creer_bloc_genesis(self.utilisateurs)
-        bloc_genesis = self.mineurs[0].miner_bloc_genesis(bloc_genesis)
+        bloc_genesis = self.mineurs[0].miner_bloc(difficulte=2)
         self.blockchain.ajouter_bloc(bloc_genesis)
         
         # Positions des utilisateurs (cercle)
