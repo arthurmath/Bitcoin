@@ -1,5 +1,6 @@
 from objects.bloc import Bloc
 from objects.transaction import Transaction
+from objects.utilisateur import Utilisateur
 
 
 class Blockchain:
@@ -18,8 +19,8 @@ class Blockchain:
         
         # Transactions Genesis permettent d'initialiser les soldes des utilisateurs
         transactions_genesis = [Transaction(
-            expediteur_adresse="GENESIS",
-            destinataire_adresse=user.adresse,
+            expediteur=Utilisateur("GENESIS"),
+            destinataire=user,
             montant=user.solde_btc,
             cle_publique_expediteur="SYSTEM"
         ) for user in utilisateurs]

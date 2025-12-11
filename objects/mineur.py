@@ -32,8 +32,8 @@ class Mineur:
         
         # Créer la transaction de récompense
         transaction_recompense = Transaction(
-            expediteur_adresse="RECOMPENSE",
-            destinataire_adresse=self.adresse,
+            expediteur=Utilisateur("RECOMPENSE"),
+            destinataire=Utilisateur("RECOMPENSE", self.adresse),
             montant=recompense,
             cle_publique_expediteur="SYSTEM"
         )
@@ -70,9 +70,10 @@ class Mineur:
             
             # Vérifier si le hash commence par le nombre requis de zéros
             if hash.startswith(cible):
+                print(f"\n✅ Bloc miné par {self.nom}! Hash: {hash[:20]}..., Nonce: {nonce}")
+                self.solde_btc += transaction_recompense.montant
                 bloc.hash = hash
                 bloc.nonce = nonce
-                print(f"\n✅ Bloc miné par {self.nom}! Hash: {bloc.hash[:20]}..., Nonce: {bloc.nonce}")
                 return bloc
             else:
                 nonce += 1

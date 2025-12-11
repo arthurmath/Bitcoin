@@ -25,6 +25,8 @@ class Simulation:
             Mineur("Mineur_Gamma"),
             Mineur("Mineur_Delta")
         ]
+
+        self.afficher_soldes()
         
         # Créer la blockchain
         self.blockchain = Blockchain(difficulte=2)
@@ -44,6 +46,19 @@ class Simulation:
         self.bloc_gagnant = None
 
 
+    def afficher_soldes(self):
+        print("\n", "-"*60)
+        print("💰 SOLDES :")
+        print("-"*60)
+        print("\nUtilisateurs:")
+        for user in self.utilisateurs:
+            print(f"  {user.nom}: {user.solde_btc:.2f} BTC")
+        print("\nMineurs:")
+        for mineur in self.mineurs:
+            print(f"  {mineur.nom}: {mineur.solde_btc:.2f} BTC")
+        print()
+
+
     
     def creer_transaction(self):
         """Crée une transaction aléatoire entre deux utilisateurs"""
@@ -58,7 +73,7 @@ class Simulation:
             return None
         
         # Créer et signer la transaction
-        tx = Transaction(expediteur.adresse, destinataire.adresse, montant, expediteur.cle_publique_hex)
+        tx = Transaction(expediteur, destinataire, montant, expediteur.cle_publique_hex)
         expediteur.signe(tx)
 
         if self.blockchain.bloc_temporaire.ajouter_transaction(tx):
@@ -113,14 +128,15 @@ class Simulation:
                     self.minage_resultats['bloc'] = bloc
                     self.minage_resultats['tentatives'] = bloc.nonce
                     
-                    # Mise à jour du solde du gagnant
-                    mineur.solde_btc += bloc.transactions[0].montant
+                    # # Mise à jour du solde du gagnant
+                    # mineur.solde_btc += bloc.transactions[0].montant
 
                 
     
     def run(self):
         cycles = 0
-        while cycles < 2:
+        while cycles < 1:
+            # print("\n","="*60,"\n","Bloc",cycles,"\n","="*60,"\n")
             if not self.minage_en_cours:
                 if len(self.transactions_bloc_actuel) < self.max_transactions_par_bloc:
                     tx = self.creer_transaction()
@@ -140,8 +156,9 @@ class Simulation:
                     cycles += 1
             time.sleep(0.1)
 
-        # Sauvegarde de la blockchain
+
         self.blockchain.sauvegarder()
+        self.afficher_soldes()
         
         # Arrêter tous les threads de minage
         self.minage_en_cours = False
@@ -154,3 +171,7 @@ if __name__ == "__main__":
     simulation = Simulation()
     simulation.run()
 
+
+
+# TODO : miner.miner(bloc) et non bloc.transactions
+# reprendre main_determined

@@ -23,17 +23,17 @@ def main():
     utilisateurs = [alice, bob, charlie, diana]
 
     # Création des mineurs
-    mineur1 = Mineur("Mineur_Alpha", alice.adresse)
-    mineur2 = Mineur("Mineur_Beta", bob.adresse)
+    mineur1 = Mineur("Mineur_Alpha")
+    mineur2 = Mineur("Mineur_Beta")
     
     mineurs = [mineur1, mineur2]
 
     # Création de la blockchain
-    blockchain = Blockchain(difficulte=difficulte)
+    blockchain = Blockchain(difficulte=2)
     
     # Création et minage du bloc genesis par le premier mineur avec les utilisateurs
     bloc_genesis = blockchain.creer_bloc_genesis(utilisateurs)
-    bloc_genesis = mineur1.miner_bloc(bloc_genesis)
+    bloc_genesis = mineur1.miner_bloc(bloc_genesis.transactions)
     blockchain.ajouter_bloc(bloc_genesis)
 
 
@@ -118,7 +118,7 @@ def main():
     
     for mineur in mineurs:
         if mineur != mineur_choisi:
-            mineur.valider(bloc, difficulte)
+            mineur.valider_bloc(bloc, bloc_genesis)
     
     # Ajouter le bloc à la blockchain
     blockchain.ajouter_bloc(bloc)
@@ -156,7 +156,7 @@ def main():
     print("="*80)
     
     mineur_choisi = random.choice(mineurs)
-    bloc = mineur_choisi.miner_bloc(
+    bloc2 = mineur_choisi.miner_bloc(
         transactions_en_attente=blockchain.transactions_en_attente.copy(),
         hash_dernier_bloc=blockchain.chaine[-1].hash,
         index_bloc=len(blockchain.chaine),

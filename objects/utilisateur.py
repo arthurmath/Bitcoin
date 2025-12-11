@@ -5,7 +5,7 @@ import random
 
 
 class Utilisateur:
-    def __init__(self, nom):
+    def __init__(self, nom, adresse=None):
         self.nom = nom
         # Génération de la clé privée (nombre aléatoire secret)
         self.cle_privee = SigningKey.generate(curve=SECP256k1)
@@ -14,7 +14,10 @@ class Utilisateur:
         # Clé publique en format hexadécimal
         self.cle_publique_hex = binascii.hexlify(self.cle_publique.to_string()).decode('ascii')
         # Génération de l'adresse Bitcoin (hash de la clé publique)
-        self.adresse = self._generer_adresse()
+        if adresse:
+            self.adresse = adresse
+        else:
+            self.adresse = self._generer_adresse()
         # Solde en BTC
         self.solde_btc = random.uniform(10, 100)
     
