@@ -1,14 +1,12 @@
 from objects.bloc import Bloc
 from objects.transaction import Transaction
 from objects.utilisateur import Utilisateur
+import random
 
 
 class Blockchain:
-    def __init__(self, difficulte=4):
+    def __init__(self):
         self.chaine = []
-        self.transactions_en_attente = []
-        self.difficulte = difficulte
-        self.bloc_temporaire = None
     
 
     def creer_bloc_genesis(self, utilisateurs=None):
@@ -21,7 +19,7 @@ class Blockchain:
         transactions_genesis = [Transaction(
             expediteur=Utilisateur("GENESIS"),
             destinataire=user,
-            montant=user.solde_btc,
+            montant=random.uniform(10, 100),
             cle_publique_expediteur="SYSTEM"
         ) for user in utilisateurs]
          
@@ -29,29 +27,29 @@ class Blockchain:
             index=0,
             transactions=transactions_genesis,
             hash_precedent="0" * 64,
-            difficulte=self.difficulte
+            difficulte=2
         )
 
         return bloc_genesis
     
-    def _initialiser_bloc_temporaire(self):
-        """Crée ou recrée le bloc temporaire pour accumuler les transactions"""
-        if len(self.chaine) > 0:
-            self.bloc_temporaire = Bloc(
-                index=len(self.chaine),
-                transactions=[],
-                hash_precedent=self.chaine[-1].hash,
-                difficulte=self.difficulte
-            )
-    
     def ajouter_bloc(self, bloc):
         """Ajoute un bloc à la chaîne après validation"""
         self.chaine.append(bloc)
-        # Vider le mempool
-        self.transactions_en_attente = []
-        # Réinitialiser le bloc temporaire
-        self._initialiser_bloc_temporaire()
         print(f"✅ Bloc ajouté à la blockchain: {bloc}\n")
+
+    
+    def calculer_solde(self, adresse):
+        """Calcule le solde d'une adresse en parcourant toute la blockchain"""
+        solde = 0.0
+        
+        for bloc in self.chaine:
+            for transaction in bloc.transactions:
+                if transaction.destinataire.adresse == adresse:
+                    solde += transaction.montant
+                if transaction.expediteur.adresse == adresse:
+                    solde -= transaction.montant
+        
+        return solde
     
 
     def sauvegarder(self, fichier='blockchain.txt'):
@@ -67,8 +65,8 @@ class Blockchain:
                 f.write(f"\n{'='*80}\n")
                 f.write(f"BLOC #{bloc.index}\n")
                 f.write(f"{'='*80}\n")
-                f.write(f"Hash: {bloc.hash}\n")
                 f.write(f"Hash précédent: {bloc.hash_precedent}\n")
+                f.write(f"Hash: {bloc.hash}\n")
                 f.write(f"Timestamp: {bloc.timestamp}\n")
                 f.write(f"Nonce: {bloc.nonce}\n")
                 f.write(f"Difficulté: {bloc.difficulte}\n")
@@ -93,37 +91,5 @@ class Blockchain:
 
 
 
-    # def valider_chaine(self):
-    #     """Vérifie l'intégrité de toute la blockchain"""
-    #     print("\n🔍 Validation de la blockchain...")
-        
-    #     for i in range(1, len(self.chaine)):
-    #         bloc_actuel = self.chaine[i]
-    #         bloc_precedent = self.chaine[i-1]
-            
-    #         # Vérifier que le bloc est valide
-    #         if not bloc_actuel.est_valide():
-    #             print(f"\n❌ Bloc #{i} invalide")
-    #             return False
-            
-    #         # Vérifier le chaînage
-    #         if bloc_actuel.hash_precedent != bloc_precedent.hash:
-    #             print(f"\n❌ Chaînage rompu au bloc #{i}")
-    #             return False
-        
-    #     print(f"\n✅ Blockchain valide ({len(self.chaine)} blocs)\n")
-    #     return True
-    
-    # def calculer_solde(self, adresse):
-    #     """Calcule le solde d'une adresse en parcourant toute la blockchain"""
-    #     solde = 0.0
-        
-    #     for bloc in self.chaine:
-    #         for transaction in bloc.transactions:
-    #             if transaction.destinataire == adresse:
-    #                 solde += transaction.montant
-    #             if transaction.expediteur == adresse:
-    #                 solde -= transaction.montant
-        
-    #     return solde
+
     

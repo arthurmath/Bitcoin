@@ -13,24 +13,15 @@ class Utilisateur:
         self.cle_publique = self.cle_privee.get_verifying_key()
         # Clé publique en format hexadécimal
         self.cle_publique_hex = binascii.hexlify(self.cle_publique.to_string()).decode('ascii')
-        # Génération de l'adresse Bitcoin (hash de la clé publique)
+        # Génération de l'adresse Bitcoin 
         if adresse:
             self.adresse = adresse
         else:
-            self.adresse = self._generer_adresse()
-        # Solde en BTC
-        self.solde_btc = random.uniform(10, 100)
-    
-    def _generer_adresse(self):
-        """Génère une adresse Bitcoin simplifiée à partir de la clé publique"""
-        cle_pub_bytes = self.cle_publique.to_string()
-        hash_cle = hashlib.sha256(cle_pub_bytes).hexdigest()
-        return hash_cle[:40]
+            self.adresse = hashlib.sha256(self.cle_publique.to_string()).hexdigest()
     
     def signe(self, transaction):
         """
         Signer une transaction avec la clé privée (ECDSA)
-        Prouve l'autorisation sans révéler la clé privée
         """
         # Créer le message à partir des données de la transaction
         message = f"{transaction.expediteur}{transaction.destinataire}{transaction.montant}{transaction.timestamp}"
@@ -53,13 +44,6 @@ class Utilisateur:
         except:
             return False
     
-    def afficher_info(self):
-        """Affiche les informations de l'utilisateur"""
-        print(f"\n--- Utilisateur: {self.nom} ---")
-        print(f"Adresse: {self.adresse}")
-        print(f"Clé publique: {self.cle_publique_hex[:50]}...")
-        print(f"Solde: {self.solde_btc:.2f} BTC")
-    
     def __str__(self):
-        return f"{self.nom} ({self.adresse[:10]}...)"
+        return f"{self.nom} ({self.adresse[:20]}...)"
 

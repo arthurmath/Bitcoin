@@ -7,9 +7,8 @@ import hashlib
 class Mineur:
     def __init__(self, nom, difficulte=2):
         self.nom = nom
-        self.solde_btc = 0.0
         self.difficulte = difficulte
-        self.adresse = nom
+        self.adresse = hashlib.sha256(nom.encode('utf-8')).hexdigest()
 
     def calculer_hash(self, header):
         """
@@ -33,7 +32,7 @@ class Mineur:
         # Créer la transaction de récompense
         transaction_recompense = Transaction(
             expediteur=Utilisateur("RECOMPENSE"),
-            destinataire=Utilisateur("RECOMPENSE", self.adresse),
+            destinataire=Utilisateur(self.nom, self.adresse),
             montant=recompense,
             cle_publique_expediteur="SYSTEM"
         )
@@ -59,24 +58,23 @@ class Mineur:
         nonce = 0
 
         while True:
-            # Vérifier si le minage doit être arrêté (par exemple si un autre mineur a trouvé le bloc)
+            # Le minage doit être arrêté si un autre mineur a trouvé le hash
             if is_mining_active is not None and not is_mining_active():
                 print(f"🛑 Mineur {self.nom} a arrêté le minage")
                 return None
 
             header = bloc.header(nonce)
             hash = self.calculer_hash(header)
-            tentatives += 1
             
             # Vérifier si le hash commence par le nombre requis de zéros
             if hash.startswith(cible):
-                print(f"\n✅ Bloc miné par {self.nom}! Hash: {hash[:20]}..., Nonce: {nonce}")
-                self.solde_btc += transaction_recompense.montant
-                bloc.hash = hash
+                print(f"\n✅ Bloc miné par {self.nom}! Nonce: {nonce}")
                 bloc.nonce = nonce
+                bloc.hash = hash
                 return bloc
             else:
                 nonce += 1
+                tentatives += 1
             
             # Affichage de progression
             if tentatives % 100000 == 0:
@@ -87,9 +85,9 @@ class Mineur:
         """
         Valide un bloc déjà miné
         Vérifie :
-        - Le hash du bloc est correct
+        - Le hash du bloc respecte la cible
+        - Le chainage avec le bloc précédent
         - Toutes les transactions sont valides
-        - Le Proof of Work est satisfait
         """
         print(f"\n🔍 Validation du bloc #{bloc.index}...")
         cible = '0' * self.difficulte
@@ -100,18 +98,9 @@ class Mineur:
             return False
 
         for tx in bloc.transactions:
-            if tx.expediteur in ["GENESIS", "RECOMPENSE"]:
+            if tx.expediteur == "RECOMPENSE":
                 continue
             if not Utilisateur.verifier_signature(tx.cle_publique, tx.contenu, tx.signature):
                 return False 
         return True 
     
-    def afficher_info(self):
-        """Affiche les informations du mineur"""
-        print(f"\n--- Mineur: {self.nom} ---")
-        print(f"Adresse: {self.adresse}")
-        print(f"Solde: {self.solde_btc} BTC")
-    
-    def __str__(self):
-        return f"Mineur {self.nom} (Solde: {self.solde_btc} BTC)"
-

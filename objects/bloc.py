@@ -32,7 +32,7 @@ class Bloc:
     def header(self, nonce):
         """
         Construit le header du bloc :
-        version || hash_bloc_précédent || racine_Merkle || timestamp || bits || nonce
+        version | hash_bloc_précédent | racine_Merkle | timestamp | bits | nonce
         """
         version = "1"
         bits = str(self.difficulte)
