@@ -59,16 +59,16 @@ class InterfaceVisuelle:
         
         # Créer 4 mineurs
         self.mineurs = [
-            Mineur("Mineur_Alpha", self.utilisateurs[0].adresse),
-            Mineur("Mineur_Beta", self.utilisateurs[1].adresse),
-            Mineur("Mineur_Gamma", self.utilisateurs[2].adresse),
-            Mineur("Mineur_Delta", self.utilisateurs[3].adresse)
+            Mineur("Mineur_Alpha", self.utilisateurs[0].cle_publique),
+            Mineur("Mineur_Beta", self.utilisateurs[1].cle_publique),
+            Mineur("Mineur_Gamma", self.utilisateurs[2].cle_publique),
+            Mineur("Mineur_Delta", self.utilisateurs[3].cle_publique)
         ]
         
         # Créer la blockchain
-        self.blockchain = Blockchain(difficulte=2)
+        self.blockchain = Blockchain()
         bloc_genesis = self.blockchain.creer_bloc_genesis(self.utilisateurs)
-        bloc_genesis = self.mineurs[0].miner_bloc(difficulte=2)
+        bloc_genesis = self.mineurs[0].miner_bloc(bloc_genesis.transactions)
         self.blockchain.ajouter_bloc(bloc_genesis)
         
         # Positions des utilisateurs (cercle)
@@ -120,18 +120,14 @@ class InterfaceVisuelle:
         montant = round(random.uniform(0.1, 5.0), 2)
         
         # Vérifier que l'expéditeur a assez de fonds
-        if expediteur.solde_btc < montant:
-            montant = round(expediteur.solde_btc * 0.5, 2)
+        if self.blockchain.calculer_solde(expediteur.cle_publique) < montant:
+            montant = round(self.blockchain.calculer_solde(expediteur.cle_publique) * 0.5, 2)
             if montant < 0.1:
                 return None
         
         # Créer et signer la transaction
-        tx = Transaction(expediteur.adresse, destinataire.adresse, montant, expediteur.cle_publique_hex)
+        tx = Transaction(expediteur, destinataire, montant, expediteur.cle_publique_hex)
         expediteur.signe(tx)
-        
-        # Mettre à jour les soldes
-        expediteur.solde_btc -= montant
-        destinataire.solde_btc += montant
         
         # Ajouter l'animation
         idx_exp = self.utilisateurs.index(expediteur)
@@ -166,8 +162,8 @@ class InterfaceVisuelle:
         """Thread de minage pour un mineur"""
         # Créer la transaction de récompense
         transaction_recompense = Transaction(
-            expediteur_adresse="RECOMPENSE",
-            destinataire_adresse=mineur.adresse,
+            expediteur=Utilisateur("RECOMPENSE"),
+            destinataire=Utilisateur(mineur.nom, mineur.cle_publique),
             montant=self.recompense_bloc,
             cle_publique_expediteur="SYSTEM"
         )
@@ -204,7 +200,6 @@ class InterfaceVisuelle:
                         self.minage_resultats['gagnant'] = mineur_id
                         self.minage_resultats['bloc'] = bloc
                         self.minage_resultats['tentatives'] = tentatives
-                        mineur.solde_btc += transaction_recompense.montant
                         
                         # Déclencher l'animation du mineur gagnant
                         self.animation.mineur_gagnant = mineur_id
@@ -228,7 +223,7 @@ class InterfaceVisuelle:
         self.ecran.blit(texte_nom, rect_nom)
         
         # Solde
-        texte_solde = self.font_petit.render(f"{utilisateur.solde_btc:.1f} BTC", True, BLANC)
+        texte_solde = self.font_petit.render(f"{self.blockchain.calculer_solde(utilisateur.cle_publique):.1f} BTC", True, BLANC)
         rect_solde = texte_solde.get_rect(center=(x, y + 15))
         self.ecran.blit(texte_solde, rect_solde)
     
@@ -304,9 +299,9 @@ class InterfaceVisuelle:
         y_tx = y + 130
         for i, tx in enumerate(self.transactions_bloc_actuel[-8:]):
             for util in self.utilisateurs:
-                if util.adresse == tx.destinataire:
+                if util.cle_publique == tx.destinataire.cle_publique:
                     destinataire = util.nom
-                if util.adresse == tx.expediteur:
+                if util.cle_publique == tx.expediteur.cle_publique:
                     expediteur = util.nom
             texte_tx = self.font_petit.render(f"{tx.montant:.2f} BTC : {expediteur} -> {destinataire}", True, NOIR)
             self.ecran.blit(texte_tx, (x + 20, y_tx + i * 25))
@@ -349,7 +344,7 @@ class InterfaceVisuelle:
             self.ecran.blit(nom_texte, rect_nom)
             
             # Solde
-            solde_texte = self.font_petit.render(f"{mineur.solde_btc:.2f} BTC", True, couleur_texte)
+            solde_texte = self.font_petit.render(f"{self.blockchain.calculer_solde(mineur.cle_publique):.2f} BTC", True, couleur_texte)
             rect_solde = solde_texte.get_rect(center=(x + largeur // 2, y + 50))
             self.ecran.blit(solde_texte, rect_solde)
             

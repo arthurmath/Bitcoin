@@ -1,12 +1,14 @@
 from objects.bloc import Bloc
 from objects.transaction import Transaction
 from objects.utilisateur import Utilisateur
+from objects.bloc import Bloc
+from typing import List
 import random
 
 
 class Blockchain:
     def __init__(self):
-        self.chaine = []
+        self.chaine: List[Bloc] = []
     
 
     def creer_bloc_genesis(self, utilisateurs=None):
@@ -38,15 +40,15 @@ class Blockchain:
         print(f"✅ Bloc ajouté à la blockchain: {bloc}\n")
 
     
-    def calculer_solde(self, adresse):
-        """Calcule le solde d'une adresse en parcourant toute la blockchain"""
+    def calculer_solde(self, cle_publique):
+        """Calcule le solde d'une clé publique en parcourant toute la blockchain"""
         solde = 0.0
         
         for bloc in self.chaine:
             for transaction in bloc.transactions:
-                if transaction.destinataire.adresse == adresse:
+                if transaction.destinataire.cle_publique == cle_publique:
                     solde += transaction.montant
-                if transaction.expediteur.adresse == adresse:
+                if transaction.expediteur.cle_publique == cle_publique:
                     solde -= transaction.montant
         
         return solde
@@ -66,7 +68,7 @@ class Blockchain:
                 f.write(f"BLOC #{bloc.index}\n")
                 f.write(f"{'='*80}\n")
                 f.write(f"Hash précédent: {bloc.hash_precedent}\n")
-                f.write(f"Hash: {bloc.hash}\n")
+                f.write(f"Hash bloc: {bloc.hash}\n")
                 f.write(f"Timestamp: {bloc.timestamp}\n")
                 f.write(f"Nonce: {bloc.nonce}\n")
                 f.write(f"Difficulté: {bloc.difficulte}\n")

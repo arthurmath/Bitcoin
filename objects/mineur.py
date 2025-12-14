@@ -5,10 +5,10 @@ import hashlib
 
 
 class Mineur:
-    def __init__(self, nom, difficulte=2):
+    def __init__(self, nom, difficulte=5):
         self.nom = nom
         self.difficulte = difficulte
-        self.adresse = hashlib.sha256(nom.encode('utf-8')).hexdigest()
+        self.cle_publique = hashlib.sha256(nom.encode('utf-8')).hexdigest()
 
     def calculer_hash(self, header):
         """
@@ -32,7 +32,7 @@ class Mineur:
         # Créer la transaction de récompense
         transaction_recompense = Transaction(
             expediteur=Utilisateur("RECOMPENSE"),
-            destinataire=Utilisateur(self.nom, self.adresse),
+            destinataire=Utilisateur(self.nom, self.cle_publique),
             montant=recompense,
             cle_publique_expediteur="SYSTEM"
         )

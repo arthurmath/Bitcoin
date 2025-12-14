@@ -49,10 +49,10 @@ class Simulation:
         print(f"\n{'-'*60}\n💰 SOLDES :\n{'-'*60}")
         print("\nUtilisateurs:")
         for user in self.utilisateurs:
-            print(f"  {user.nom}: {self.blockchain.calculer_solde(user.adresse):.2f} BTC")
+            print(f"  {user.nom}: {self.blockchain.calculer_solde(user.cle_publique):.2f} BTC")
         print("\nMineurs:")
         for mineur in self.mineurs:
-            print(f"  {mineur.nom}: {self.blockchain.calculer_solde(mineur.adresse):.2f} BTC")
+            print(f"  {mineur.nom}: {self.blockchain.calculer_solde(mineur.cle_publique):.2f} BTC")
         print()
 
 
@@ -66,13 +66,12 @@ class Simulation:
         montant = round(random.uniform(0.1, 5.0), 2)
         
         # Vérifier que l'expéditeur a assez de fonds
-        if self.blockchain.calculer_solde(expediteur.adresse) < montant:
+        if self.blockchain.calculer_solde(expediteur.cle_publique) < montant:
             return None
         
         # Créer et signer la transaction
         tx = Transaction(expediteur, destinataire, montant, expediteur.cle_publique_hex)
         expediteur.signe(tx)
-
         self.mempool.append(tx)
 
         print(tx)
@@ -150,11 +149,8 @@ class Simulation:
                 thread.join(timeout=1.0)
         
 
+
 if __name__ == "__main__":
     simulation = Simulation()
     simulation.run()
 
-
-
-# TODO : mineur.miner(bloc) et non bloc.transactions
-# Utiliser fonction blockchain.calculer_montant pour connaitre les soldes des utilisateurs

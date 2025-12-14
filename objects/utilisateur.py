@@ -1,11 +1,10 @@
 import hashlib
 from ecdsa import SigningKey, VerifyingKey, SECP256k1
 import binascii
-import random
 
 
 class Utilisateur:
-    def __init__(self, nom, adresse=None):
+    def __init__(self, nom, cle_publique=None):
         self.nom = nom
         # Génération de la clé privée (nombre aléatoire secret)
         self.cle_privee = SigningKey.generate(curve=SECP256k1)
@@ -13,11 +12,9 @@ class Utilisateur:
         self.cle_publique = self.cle_privee.get_verifying_key()
         # Clé publique en format hexadécimal
         self.cle_publique_hex = binascii.hexlify(self.cle_publique.to_string()).decode('ascii')
-        # Génération de l'adresse Bitcoin 
-        if adresse:
-            self.adresse = adresse
-        else:
-            self.adresse = hashlib.sha256(self.cle_publique.to_string()).hexdigest()
+        # Pour les mineurs, la clé publique est fournie
+        if cle_publique:
+            self.cle_publique = cle_publique
     
     def signe(self, transaction):
         """
@@ -45,5 +42,5 @@ class Utilisateur:
             return False
     
     def __str__(self):
-        return f"{self.nom} ({self.adresse[:20]}...)"
+        return f"{self.nom} ({self.cle_publique_hex[:20]}...)"
 

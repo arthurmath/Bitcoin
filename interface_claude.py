@@ -123,7 +123,7 @@ class VisualBlockchain:
         
         # Créer les mineurs
         for i in range(self.nb_mineurs):
-            mineur = Mineur(f"Mineur_{i+1}", self.utilisateurs[i % len(self.utilisateurs)].adresse)
+            mineur = Mineur(f"Mineur_{i+1}", self.utilisateurs[i % len(self.utilisateurs)].cle_publique)
             self.mineurs.append(mineur)
         
         # Créer la blockchain
@@ -152,7 +152,7 @@ class VisualBlockchain:
             return None
         
         # Créer la transaction
-        tx = Transaction(expediteur.adresse, destinataire.adresse, montant, expediteur.cle_publique_hex)
+        tx = Transaction(expediteur.cle_publique, destinataire.cle_publique, montant, expediteur.cle_publique_hex)
         expediteur.signe(tx)
         
         # Mettre à jour les soldes
@@ -191,8 +191,8 @@ class VisualBlockchain:
             """Fonction de minage pour un thread"""
             # Créer la transaction coinbase
             transaction_recompense = Transaction(
-                expediteur_adresse="RECOMPENSE",
-                destinataire_adresse=mineur.adresse,
+                expediteur_cle_publique="RECOMPENSE",
+                destinataire_cle_publique=mineur.cle_publique,
                 montant=self.recompense_bloc,
                 cle_publique_expediteur="SYSTEM"
             )

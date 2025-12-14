@@ -16,10 +16,10 @@ Chaque utilisateur possède :
 Lorsqu’un utilisateur A envoie 3 BTC à un utilisateur B, on peut encoder cette transaction sous la forme du **Message** suivant : "clé publique A -> 3 -> clé publique B".
 
 1. L'utilisateur A signe la transaction avec sa clé privée. Seul lui peut générer cette _Signature_ car il est le seul à connaitre sa clé privée.  
-&nbsp;→ Sign(**Message**, clé privée A) = _Signature_
+&nbsp;&nbsp;→ Sign(**Message**, clé privée A) = _Signature_
 
 2. N’importe qui peut vérifier la signature d'une personne avec le message qu'elle a signé et sa clé publique.  
-&nbsp;→ Verify(**Message**, _Signature_, clé publique A) = True/False
+&nbsp;&nbsp;→ Verify(**Message**, _Signature_, clé publique A) = True/False
 
 Les deux fonctions Sign et Verify sont présentes dans la classe Utilisateur du code. Cela permet de confirmer l’authenticité de la transaction à partir de la clé publique de A et donc sans révéler sa clé privée. Ce mécanisme repose sur ECDSA (Elliptic Curve Digital Signature Algorithm).
 
@@ -75,11 +75,11 @@ La condition à satisfaire est : SHA256(SHA256(header du bloc)) < cible
 
 Ils répètent donc :  
 while True:  
-&nbsp;hash_val = SHA256(SHA256(header + nonce))  
-&nbsp;if hash_val < cible:  
-&nbsp;&nbsp;break  
-&nbsp;else:  
-&nbsp;&nbsp;nonce += 1  
+&nbsp;&nbsp;hash_val = SHA256(SHA256(header + nonce))  
+&nbsp;&nbsp;if hash_val < cible:  
+&nbsp;&nbsp;&nbsp;&nbsp;break  
+&nbsp;&nbsp;else:  
+&nbsp;&nbsp;&nbsp;&nbsp;nonce += 1  
 
 Exemple : cible = 0000FFFFFFFFFFFFFFFFFFFFFFFFFFFF  
 Il faut trouver un hash commençant par au moins quatre zéros (qu'importe les digits suivants). Les mineurs vont tester un grand nombre de valeurs du nonce jusqu'à ce qu'ils trouvent celui qui permet d'atteindre le nombre de zéros du hash désiré. Trouver un tel hash est purement probabiliste : chaque essai a une probabilité de réussite d’environ 1 / 2^(nombre_de_zéros). Donc plus le nombre de zéros est grand, plus il faut d’essais. Le protocole Bitcoin ajuste la difficulté tous les 2016 blocs (environ toutes les deux semaines) pour maintenir un rythme d’un bloc toutes les 10 minutes en moyenne.
@@ -93,7 +93,7 @@ Le mineur gagant reçoit alors :
 * la **récompense de bloc** (3,125 BTC depuis le halving de 2024),
 * les **frais de transaction** inclus dans ce bloc (de l'ordre de 0.00001 BTC).
 
-Le halving est un évènement encodé dans le protocol Bitcoin s'exécutant de manière automatique pour diviser par deux le nombre de bitcoins créés lors du minage. Le dernier bitcoin crée le sera en 2140 environ, pour un total final de 21M BTC émis.
+Le halving est un évènement encodé dans le protocol Bitcoin s'exécutant de manière automatique tous les 210.000 blocs (environ tous les 4 ans) divisant par deux le nombre de bitcoins créés lors du minage. Le dernier bitcoin crée le sera en 2140 environ, pour un total final de 21M BTC émis.
 
 * 2009 : 50 BTC
 * 2012 : 25 BTC
@@ -111,9 +111,9 @@ Le Proof of Work rend les attaques énergétiquement coûteuses. Voyons deux exe
 #### Tentative de modification d'un bloc déjà validé
 
 Si un attaquant veut modifier un bloc déjà inscrit dans la Blockchain :
-&nbsp;Il change une transaction → change le hash du bloc.
-&nbsp;Donc le lien avec le bloc suivant devient invalide car il contient le hash du bloc précédent.
-&nbsp;Il doit recalculer les hashs de tous les blocs suivants pour rattraper la chaîne honnête.
+&nbsp;&nbsp;Il change une transaction → change le hash du bloc.
+&nbsp;&nbsp;Donc le lien avec le bloc suivant devient invalide car il contient le hash du bloc précédent.
+&nbsp;&nbsp;Il doit recalculer les hashs de tous les blocs suivants pour rattraper la chaîne honnête.
 
 Mais pendant ce temps, le reste du réseau continue d’avancer. Modifier un bloc impliquerait de refaire tout ce calcul pour ce bloc et tous les suivants. Les mineurs suivent toujours la chaîne la chaîne la plus longue, donc la chaine avec le plus de travail réalisé. La chaine honnête est toujours la plus longue chaine car c'est celle qui a accumulé le plus de travail. L’attaquant devrait donc disposer de > 50% de la puissance de calcul totale pour espérer rattraper et dépasser la chaîne honnête, c’est la fameuse attaque des 51%, en pratique impossible à mener à grande échelle. 
 
@@ -130,6 +130,6 @@ Non, car tous les mineurs ont accès au même ensemble public de transactions va
 
 Vous avez maintenant compris comment la Blockchain sécurise les transactions du réseau Bitcoin. Les signatures permettent d'authentifier les transactions et le travail des mineurs sécurise et rends immuable le registre de ces transactions. La blockchain peut servir à authentifier n'importe quelle information, elle est aussi utilisée par les NFT (Non Fungible Token, associé à un objet unique comme une image, opposé aux bitcoins qui sont des tokens interchangeables, donc fongibles), les RWA (Real World Asset), pour certifier son diplome par son école ou pour tout autre système souhaitant avoir des informations vérifiables.
 
-Voici une capture d'écran de l'interface illustrant ce fonctionnement :
+Voici une capture d'écran de l'interface illustrant le fonctionnement de la Blockchain :
 
 ![Interface visuelle de la simulation](images/screenshot.png)
