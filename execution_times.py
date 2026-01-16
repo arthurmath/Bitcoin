@@ -66,8 +66,8 @@ for i in range(1, n+1):
         start = time.time()
         bloc = mineurs[0].miner_bloc(
             transactions_en_attente=mempool,
-            hash_dernier_bloc=blockchain.chaine[-1].hash,
-            index_bloc=len(blockchain.chaine),
+            hash_dernier_bloc=blockchain.chain[-1].hash,
+            index_bloc=len(blockchain.chain),
             difficulte=i,
         )
         exec_times_i.append(time.time() - start)

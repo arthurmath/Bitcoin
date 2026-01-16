@@ -20,13 +20,8 @@ class Bloc:
         Calcule la racine de Merkle (résumé cryptographique des transactions)
         Simplifié : hash de la concaténation des hash de toutes les transactions
         """
-        if not self.transactions:
-            return hashlib.sha256(b'').hexdigest()
-        
-        hashes_transactions = [tx.hash_transaction for tx in self.transactions]
-        
-        # Combinaison des hashes (version simplifiée de l'arbre de Merkle)
-        merkle_content = ''.join(hashes_transactions)
+        # Combinaison des hashs (version simplifiée de l'arbre de Merkle)
+        merkle_content = ''.join(tx.hash_transaction for tx in self.transactions)
         return hashlib.sha256(merkle_content.encode()).hexdigest()
     
     def header(self, nonce):

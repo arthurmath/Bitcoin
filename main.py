@@ -30,8 +30,7 @@ class Simulation:
 
         # Initialiser la blockchain
         self.blockchain = Blockchain()
-        bloc_genesis = self.blockchain.creer_bloc_genesis(self.utilisateurs)
-        bloc_genesis = self.mineurs[0].miner_bloc(bloc_genesis.transactions)
+        bloc_genesis = self.mineurs[0].creer_bloc_genesis(self.utilisateurs)
         self.blockchain.ajouter_bloc(bloc_genesis)
         self.afficher_soldes()
         
@@ -39,8 +38,8 @@ class Simulation:
         self.mempool: List[Transaction] = []
         
         # État du minage
-        self.minage_en_cours = False
         self.minage_threads = []
+        self.minage_en_cours = False
         self.minage_lock = threading.Lock()
         self.bloc_gagnant = None
 
@@ -49,10 +48,10 @@ class Simulation:
         print(f"\n{'-'*60}\n💰 SOLDES :\n{'-'*60}")
         print("\nUtilisateurs:")
         for user in self.utilisateurs:
-            print(f"  {user.nom}: {self.blockchain.calculer_solde(user.cle_publique):.2f} BTC")
+            print(f"  {user.nom}: {self.mineurs[0].calculer_solde(self.blockchain.chain, user.cle_publique):.2f} BTC")
         print("\nMineurs:")
         for mineur in self.mineurs:
-            print(f"  {mineur.nom}: {self.blockchain.calculer_solde(mineur.cle_publique):.2f} BTC")
+            print(f"  {mineur.nom}: {self.mineurs[0].calculer_solde(self.blockchain.chain, mineur.cle_publique):.2f} BTC")
         print()
 
 
@@ -66,7 +65,7 @@ class Simulation:
         montant = round(random.uniform(0.1, 5.0), 2)
         
         # Vérifier que l'expéditeur a assez de fonds
-        if self.blockchain.calculer_solde(expediteur.cle_publique) < montant:
+        if self.mineurs[0].calculer_solde(self.blockchain.chain, expediteur.cle_publique) < montant:
             return None
         
         # Créer et signer la transaction
@@ -102,8 +101,8 @@ class Simulation:
         # Appel à la méthode du mineur
         bloc = mineur.miner_bloc(
             transactions_en_attente=self.mempool,
-            hash_dernier_bloc=self.blockchain.chaine[-1].hash,
-            index_bloc=len(self.blockchain.chaine),
+            hash_dernier_bloc=self.blockchain.chain[-1].hash,
+            index_bloc=len(self.blockchain.chain),
             recompense=self.recompense_bloc,
             difficulte=self.difficulte,
             is_mining_active=check_active
@@ -132,7 +131,7 @@ class Simulation:
                 while self.minage_en_cours:
                     time.sleep(0.1)
                 
-                self.mineurs[0].valider_bloc(self.bloc_gagnant, self.blockchain.chaine[-1])
+                self.mineurs[0].valider_bloc(self.bloc_gagnant, self.blockchain.chain[-1])
                 self.blockchain.ajouter_bloc(self.bloc_gagnant)
                 self.bloc_gagnant = None
                 self.mempool = []

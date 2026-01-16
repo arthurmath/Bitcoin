@@ -1,23 +1,46 @@
 from objects.bloc import Bloc
 from objects.transaction import Transaction
 from objects.utilisateur import Utilisateur
+import random
 import hashlib
 
 
-class Mineur:
+class Mineur(Utilisateur):
     def __init__(self, nom, difficulte=5):
         self.nom = nom
         self.difficulte = difficulte
         self.cle_publique = hashlib.sha256(nom.encode('utf-8')).hexdigest()
+        super().__init__(self.nom, self.cle_publique)
 
     def calculer_hash(self, header):
-        """
-        Calcule le hash du bloc avec double SHA256
-        SHA256(SHA256(header))
-        """
+        """ Calcule le hash d'un bloc avec double SHA256 """
         hash1 = hashlib.sha256(header).digest()
         hash2 = hashlib.sha256(hash1).hexdigest()
         return hash2
+
+
+    def creer_bloc_genesis(self, utilisateurs=None):
+        """Crée le premier bloc de la blockchain (bloc genesis) sans le miner"""
+        print("\n" + "="*60)
+        print("🌟 Création du bloc Genesis")
+        print("="*60)
+        
+        # Transactions Genesis permettent d'initialiser les soldes des utilisateurs
+        transactions_genesis = [Transaction(
+            expediteur=Utilisateur("GENESIS"),
+            destinataire=user,
+            montant=random.uniform(10, 100),
+            cle_publique_expediteur="SYSTEM"
+        ) for user in utilisateurs]
+         
+        bloc_genesis = Bloc(
+            index=0,
+            transactions=transactions_genesis,
+            hash_precedent="0" * 64,
+            difficulte=2
+        )
+
+        return self.miner_bloc(bloc_genesis.transactions)
 
     
     def miner_bloc(self, transactions_en_attente=[], hash_dernier_bloc="0", index_bloc=0, recompense=3.125, difficulte=2, is_mining_active=None):
@@ -100,7 +123,21 @@ class Mineur:
         for tx in bloc.transactions:
             if tx.expediteur == "RECOMPENSE":
                 continue
-            if not Utilisateur.verifier_signature(tx.cle_publique, tx.contenu, tx.signature):
+            if not self.verifier_signature(tx.cle_publique, tx.contenu, tx.signature):
                 return False 
         return True 
+    
+
+    def calculer_solde(self, chain, cle_publique):
+        """Calcule le solde d'une clé publique en parcourant toute la blockchain"""
+        solde = 0.0
+        
+        for bloc in chain:
+            for transaction in bloc.transactions:
+                if transaction.destinataire.cle_publique == cle_publique:
+                    solde += transaction.montant
+                if transaction.expediteur.cle_publique == cle_publique:
+                    solde -= transaction.montant
+        
+        return solde
     

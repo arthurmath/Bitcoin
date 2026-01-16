@@ -1,58 +1,14 @@
 from objects.bloc import Bloc
-from objects.transaction import Transaction
-from objects.utilisateur import Utilisateur
-from objects.bloc import Bloc
 from typing import List
-import random
 
 
 class Blockchain:
     def __init__(self):
-        self.chaine: List[Bloc] = []
-    
-
-    def creer_bloc_genesis(self, utilisateurs=None):
-        """Crée le premier bloc de la blockchain (bloc genesis) sans le miner"""
-        print("\n" + "="*60)
-        print("🌟 Création du bloc Genesis")
-        print("="*60)
-        
-        # Transactions Genesis permettent d'initialiser les soldes des utilisateurs
-        transactions_genesis = [Transaction(
-            expediteur=Utilisateur("GENESIS"),
-            destinataire=user,
-            montant=random.uniform(10, 100),
-            cle_publique_expediteur="SYSTEM"
-        ) for user in utilisateurs]
-         
-        bloc_genesis = Bloc(
-            index=0,
-            transactions=transactions_genesis,
-            hash_precedent="0" * 64,
-            difficulte=2
-        )
-
-        return bloc_genesis
+        self.chain: List[Bloc] = []
     
     def ajouter_bloc(self, bloc):
-        """Ajoute un bloc à la chaîne après validation"""
-        self.chaine.append(bloc)
+        self.chain.append(bloc)
         print(f"✅ Bloc ajouté à la blockchain: {bloc}\n")
-
-    
-    def calculer_solde(self, cle_publique):
-        """Calcule le solde d'une clé publique en parcourant toute la blockchain"""
-        solde = 0.0
-        
-        for bloc in self.chaine:
-            for transaction in bloc.transactions:
-                if transaction.destinataire.cle_publique == cle_publique:
-                    solde += transaction.montant
-                if transaction.expediteur.cle_publique == cle_publique:
-                    solde -= transaction.montant
-        
-        return solde
-    
 
     def sauvegarder(self, fichier='blockchain.txt'):
         """Sauvegarde la blockchain dans un fichier texte"""
@@ -63,7 +19,7 @@ class Blockchain:
             f.write("BLOCKCHAIN BITCOIN\n")
             f.write("="*80 + "\n\n")
             
-            for bloc in self.chaine:
+            for bloc in self.chain:
                 f.write(f"\n{'='*80}\n")
                 f.write(f"BLOC #{bloc.index}\n")
                 f.write(f"{'='*80}\n")

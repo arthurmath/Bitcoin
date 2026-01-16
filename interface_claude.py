@@ -177,8 +177,8 @@ class VisualBlockchain:
         """Mine un bloc avec plusieurs mineurs en parallèle"""
         # Préparer les transactions
         transactions = self.bloc_temporaire_transactions.copy()
-        hash_dernier = self.blockchain.chaine[-1].hash
-        index_bloc = len(self.blockchain.chaine)
+        hash_dernier = self.blockchain.chain[-1].hash
+        index_bloc = len(self.blockchain.chain)
         
         # Thread pour chaque mineur
         threads = []
@@ -358,10 +358,10 @@ class VisualBlockchain:
         self.screen.blit(text, text_rect)
         
         # Dessiner les derniers blocs (maximum 8)
-        nb_blocs_afficher = min(8, len(self.blockchain.chaine))
-        debut = max(0, len(self.blockchain.chaine) - nb_blocs_afficher)
+        nb_blocs_afficher = min(8, len(self.blockchain.chain))
+        debut = max(0, len(self.blockchain.chain) - nb_blocs_afficher)
         
-        for i, bloc in enumerate(self.blockchain.chaine[debut:]):
+        for i, bloc in enumerate(self.blockchain.chain[debut:]):
             y = y_start + i * 90
             
             # Rectangle du bloc
@@ -428,7 +428,7 @@ class VisualBlockchain:
                     
                     # Créer l'animation du bloc vers la blockchain
                     pos_mineurs = (975, 550)
-                    pos_blockchain = (self.position_blockchain[0], self.position_blockchain[1] + (len(self.blockchain.chaine) - 1) * 90)
+                    pos_blockchain = (self.position_blockchain[0], self.position_blockchain[1] + (len(self.blockchain.chain) - 1) * 90)
                     self.animation_bloc = BlocAnimation(pos_mineurs, pos_blockchain, bloc_gagne)
                     
                     # Réinitialiser

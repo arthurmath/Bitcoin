@@ -1,4 +1,3 @@
-import hashlib
 from ecdsa import SigningKey, VerifyingKey, SECP256k1
 import binascii
 
@@ -27,6 +26,7 @@ class Utilisateur:
         # Stocker la signature dans la transaction
         transaction.signature = binascii.hexlify(signature).decode('ascii')
     
+    @staticmethod
     def verifier_signature(cle_publique_hex, message, signature):
         """
         Vérifie une signature avec la clé publique

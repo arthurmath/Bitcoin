@@ -7,7 +7,7 @@ Ce projet propose une implémentation du réseau Bitcoin. Une interface visuelle
 
 ### **1. Signature numérique**
 
-Pour sécuriser les transactions, la blockchain Bitcoin utilise un système de cryptographie asymétrique permettant de démontrer que l’on connaît un secret sans avoir à le dévoiler. Elle est basée sur un système à clé privée et publique. Celle-ci permet de vérifier des transactions pair à pair de manière décentralisé, donc sans entitée unique controlant toutes les transactions. Elle permet donc de faire des transactions sans devoir passer par un intermédiaire comme Visa ou Mastercard, qui prennent une commision sur chaque transaction.
+Pour sécuriser les transactions, la blockchain Bitcoin utilise un système de cryptographie asymétrique. Celui ci permet de démontrer que l’on connaît un secret sans avoir à le dévoiler. Il est basé sur un système à clé privée et publique, il permet de vérifier des transactions pair à pair de manière décentralisée, donc sans entitée unique controlant toutes les transactions. Elle permet donc de faire des transactions sans devoir passer par un intermédiaire comme Visa ou Mastercard, qui prennent au passage une commision sur chaque transaction.
 
 Chaque utilisateur possède :
 * **une clé privée** : un nombre aléatoire secret,
@@ -15,7 +15,7 @@ Chaque utilisateur possède :
 
 Lorsqu’un utilisateur A envoie 3 BTC à un utilisateur B, on peut encoder cette transaction sous la forme du **Message** suivant : "clé publique A -> 3 -> clé publique B".
 
-1. L'utilisateur A signe la transaction avec sa clé privée. Seul lui peut générer cette _Signature_ car il est le seul à connaitre sa clé privée.  
+1. L'utilisateur A signe la transaction avec sa clé privée. Lui seul peut générer cette _Signature_ car il est le seul à connaitre sa clé privée.  
 &nbsp;&nbsp;→ Sign(**Message**, clé privée A) = _Signature_
 
 2. N’importe qui peut vérifier la signature d'une personne avec le message qu'elle a signé et sa clé publique.  
@@ -64,7 +64,7 @@ Un bloc contient notamment :
 * un timestamp,
 * un nonce.
 
-Ces informations sont condensées dans un résumé, appelé header du bloc, qui a la forme suivante : "version | hash_bloc_précédent | racine_Merkle |  timestamp | bits | nonce". Chaque bloc contient donc l'information condensée du bloc précédent, qui lui même contient celle du bloc précédent etc. Cela forme donc une chaine de blocs tous liés les uns aux autres, ou en anglais "Blockchain". Si l'on change une information dans un bloc, on brise toute la chaine, ce qui permet d'authentifier toutes les informations qui y sont présentes.
+Ces informations sont condensées dans un résumé, appelé header du bloc, qui a la forme suivante : "version | hash_bloc_précédent | racine_Merkle | timestamp | bits | nonce". Chaque bloc contient donc l'information condensée du bloc précédent, qui lui même contient celle du bloc précédent etc. Cela forme donc une chaine de blocs tous liés les uns aux autres, ou en anglais "Blockchain". Si l'on change une information dans un bloc, on brise toute la chaine, ce qui permet d'authentifier toutes les informations qui y sont présentes.
 
 
 ### **3. Rôle des mineurs**
@@ -90,7 +90,7 @@ Il faut trouver un hash commençant par au moins quatre zéros (qu'importe les d
 Il y a donc une compétition entre tous les mineurs du monde pour trouver le hash valide du bloc en cours. Lorsqu’un mineur trouve un hash valide, il  diffuse le bloc au reste du réseau, il est ajouté à la blockchain. Il est ensuite facile pour les autres mineurs de vérifier que le nonce est correct, et que donc ce bloc a été validé.
 
 Le mineur gagant reçoit alors :
-* la **récompense de bloc** (3,125 BTC depuis le halving de 2024),
+* la **récompense de bloc** (3,125 BTC),
 * les **frais de transaction** inclus dans ce bloc (de l'ordre de 0.00001 BTC).
 
 Le halving est un évènement encodé dans le protocol Bitcoin s'exécutant de manière automatique tous les 210.000 blocs (environ tous les 4 ans) divisant par deux le nombre de bitcoins créés lors du minage. Le dernier bitcoin crée le sera en 2140 environ, pour un total final de 21M BTC émis.
@@ -105,7 +105,7 @@ Le halving est un évènement encodé dans le protocol Bitcoin s'exécutant de m
 
 ### **5. Comment cela garantit la sécurité**
 
-Le Proof of Work rend les attaques énergétiquement coûteuses. Voyons deux exemples : une tentative de falsification d'un bloc déjà inscrit dans la blockchain et du dernier bloc en cours de minage. Tout d'abord, il n'est pas possible d'enregistrer une transaction d'un utilisateur X vers soi, car il faudrait sa clé privée pour signer la transaction. Il est cependant possible de modifier une transaction faite soi-meme vers quelqu'un d'autre. Par exemple, j'ai acheté une moto pour 2 BTC, puis je modifie cette transaction après pour n'avoir envoyé que 1 BTC.
+Le Proof of Work rend les attaques énergétiquement coûteuses. Voyons deux exemples : une tentative de falsification d'un bloc déjà inscrit dans la blockchain et du dernier bloc en cours de minage. Tout d'abord, il n'est pas possible d'enregistrer une transaction d'un autre utilisateur vers soi-même, car il faudrait sa clé privée pour signer la transaction. Il est cependant possible de modifier une transaction faite soi-même vers quelqu'un d'autre. Par exemple, j'ai acheté une moto pour 2 BTC, puis je modifie cette transaction après pour n'avoir envoyé que 1 BTC.
 
 
 #### Tentative de modification d'un bloc déjà validé
@@ -128,7 +128,7 @@ Non, car tous les mineurs ont accès au même ensemble public de transactions va
 
 ## Conclusion
 
-Vous avez maintenant compris comment la Blockchain sécurise les transactions du réseau Bitcoin. Les signatures permettent d'authentifier les transactions et le travail des mineurs sécurise et rends immuable le registre de ces transactions. La blockchain peut servir à authentifier n'importe quelle information, elle est aussi utilisée par les NFT (Non Fungible Token, associé à un objet unique comme une image, opposé aux bitcoins qui sont des tokens interchangeables, donc fongibles), les RWA (Real World Asset), pour certifier son diplome par son école ou pour tout autre système souhaitant avoir des informations vérifiables.
+Vous avez maintenant compris comment la Blockchain sécurise les transactions du réseau Bitcoin. Les signatures permettent d'authentifier les transactions et le travail des mineurs sécurise et rends immuable le registre de ces transactions. La blockchain peut servir à authentifier n'importe quelle information. Elle est utilisée par les NFT (Non Fungible Token), associé à un objet unique comme une image, opposé aux bitcoins qui sont des tokens interchangeables, donc fongibles. Elle est aussi utilisée dans la finance décentralisée, par les RWA (Real World Asset), pour certifier son diplome par son école ou par tout autre système souhaitant avoir des informations publiques vérifiables.
 
 Voici une capture d'écran de l'interface illustrant le fonctionnement de la Blockchain :
 
