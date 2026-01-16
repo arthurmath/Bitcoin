@@ -3,7 +3,7 @@ import binascii
 
 
 class Utilisateur:
-    def __init__(self, nom, cle_publique=None):
+    def __init__(self, nom):
         self.nom = nom
         # Génération de la clé privée (nombre aléatoire secret)
         self.cle_privee = SigningKey.generate(curve=SECP256k1)
@@ -11,9 +11,6 @@ class Utilisateur:
         self.cle_publique = self.cle_privee.get_verifying_key()
         # Clé publique en format hexadécimal
         self.cle_publique_hex = binascii.hexlify(self.cle_publique.to_string()).decode('ascii')
-        # Pour les mineurs, la clé publique est fournie
-        if cle_publique:
-            self.cle_publique = cle_publique
     
     def signe(self, transaction):
         """
@@ -24,7 +21,7 @@ class Utilisateur:
         message_bytes = message.encode('utf-8')
         signature = self.cle_privee.sign(message_bytes)
         # Stocker la signature dans la transaction
-        transaction.signature = binascii.hexlify(signature).decode('ascii')
+        return binascii.hexlify(signature).decode('ascii')
     
     @staticmethod
     def verifier_signature(cle_publique_hex, message, signature):

@@ -1,7 +1,7 @@
+from objects.transaction import Transaction
 import hashlib
 import time
 from typing import List
-from objects.transaction import Transaction
 
 
 class Bloc:
@@ -11,36 +11,11 @@ class Bloc:
         self.hash_precedent = hash_precedent
         self.timestamp = time.time()
         self.difficulte = difficulte
-        self.nonce = 0
-        self.racine_merkle = self._calculer_racine_merkle()
         self.hash = None
-    
-    def _calculer_racine_merkle(self):
-        """
-        Calcule la racine de Merkle (résumé cryptographique des transactions)
-        Simplifié : hash de la concaténation des hash de toutes les transactions
-        """
-        # Combinaison des hashs (version simplifiée de l'arbre de Merkle)
+        # Calcul simplifié de la racine de Merkle
         merkle_content = ''.join(tx.hash_transaction for tx in self.transactions)
-        return hashlib.sha256(merkle_content.encode()).hexdigest()
-    
-    def header(self, nonce):
-        """
-        Construit le header du bloc :
-        version | hash_bloc_précédent | racine_Merkle | timestamp | bits | nonce
-        """
-        version = "1"
-        bits = str(self.difficulte)
-        header = f"{version}{self.hash_precedent}{self.racine_merkle}{self.timestamp}{bits}{nonce}"
-        return header.encode()
-    
-    def ajouter_transaction(self, transaction):
-        """Ajoute une transaction au bloc et recalcule la racine de Merkle"""
-        self.transactions.append(transaction)
-        self.racine_merkle = self._calculer_racine_merkle()
-        return True
+        self.racine_merkle = hashlib.sha256(merkle_content.encode()).hexdigest()
             
     def __str__(self):
         return f"Bloc #{self.index} | Hash: {self.hash[:20]}... | Transactions: {len(self.transactions)}"
-
 

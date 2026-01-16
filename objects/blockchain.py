@@ -44,10 +44,3 @@ class Blockchain:
         
         print(f"✅ Blockchain sauvegardée")
     
-
-
-
-
-
-
-    

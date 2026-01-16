@@ -70,7 +70,7 @@ class Simulation:
         
         # Créer et signer la transaction
         tx = Transaction(expediteur, destinataire, montant, expediteur.cle_publique_hex)
-        expediteur.signe(tx)
+        tx.signature = expediteur.signe(tx)
         self.mempool.append(tx)
 
         print(tx)

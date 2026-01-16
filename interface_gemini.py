@@ -126,7 +126,7 @@ class InterfaceVisuelle:
         
         # Créer et signer la transaction
         tx = Transaction(expediteur, destinataire, montant, expediteur.cle_publique_hex)
-        expediteur.signe(tx)
+        tx.signature = expediteur.signe(tx)
         
         # Ajouter l'animation
         idx_exp = self.utilisateurs.index(expediteur)
@@ -162,7 +162,7 @@ class InterfaceVisuelle:
         # Créer la transaction de récompense
         transaction_recompense = Transaction(
             expediteur=Utilisateur("RECOMPENSE"),
-            destinataire=Utilisateur(mineur.nom, mineur.cle_publique),
+            destinataire=mineur,
             montant=self.recompense_bloc,
             cle_publique_expediteur="SYSTEM"
         )
@@ -187,8 +187,7 @@ class InterfaceVisuelle:
         nonce = 0
         
         while self.minage_en_cours:
-            header = bloc.header(nonce)
-            hash = mineur.calculer_hash(header)
+            hash = mineur.calculer_hash(bloc, nonce)
         
             if hash.startswith(cible):
                 # Succès !

@@ -1,25 +1,17 @@
+from objects.utilisateur import Utilisateur
 from objects.bloc import Bloc
 from objects.transaction import Transaction
-from objects.utilisateur import Utilisateur
 import random
 import hashlib
 
 
 class Mineur(Utilisateur):
     def __init__(self, nom, difficulte=5):
-        self.nom = nom
+        super().__init__(nom)
         self.difficulte = difficulte
-        self.cle_publique = hashlib.sha256(nom.encode('utf-8')).hexdigest()
-        super().__init__(self.nom, self.cle_publique)
-
-    def calculer_hash(self, header):
-        """ Calcule le hash d'un bloc avec double SHA256 """
-        hash1 = hashlib.sha256(header).digest()
-        hash2 = hashlib.sha256(hash1).hexdigest()
-        return hash2
 
 
-    def creer_bloc_genesis(self, utilisateurs=None):
+    def creer_bloc_genesis(self, utilisateurs):
         """Crée le premier bloc de la blockchain (bloc genesis) sans le miner"""
         print("\n" + "="*60)
         print("🌟 Création du bloc Genesis")
@@ -55,7 +47,7 @@ class Mineur(Utilisateur):
         # Créer la transaction de récompense
         transaction_recompense = Transaction(
             expediteur=Utilisateur("RECOMPENSE"),
-            destinataire=Utilisateur(self.nom, self.cle_publique),
+            destinataire=self,
             montant=recompense,
             cle_publique_expediteur="SYSTEM"
         )
@@ -64,8 +56,8 @@ class Mineur(Utilisateur):
         frais_totaux = sum(0.0001 for _ in transactions_en_attente)  # 0.0001 BTC par transaction
         transaction_recompense.montant += frais_totaux
         
-        # Combiner la récompense avec les transactions en attente
-        toutes_transactions = [transaction_recompense] + transactions_en_attente
+        # Ajout de la transaction recompense
+        toutes_transactions = transactions_en_attente + [transaction_recompense]
 
         # Créer le bloc
         bloc = Bloc(
@@ -75,7 +67,7 @@ class Mineur(Utilisateur):
             difficulte=difficulte
         )
         
-        # Miner le bloc (Proof of Work)
+        # Minage du bloc (Proof of Work)
         cible = '0' * difficulte
         tentatives = 0
         nonce = 0
@@ -86,12 +78,11 @@ class Mineur(Utilisateur):
                 print(f"🛑 Mineur {self.nom} a arrêté le minage")
                 return None
 
-            header = bloc.header(nonce)
-            hash = self.calculer_hash(header)
+            hash = self.calculer_hash(bloc, nonce)
             
             # Vérifier si le hash commence par le nombre requis de zéros
             if hash.startswith(cible):
-                print(f"\n✅ Bloc miné par {self.nom}! Nonce: {nonce}")
+                print(f"\n✅ Bloc miné par {self.nom}! Nonce trouvé: {nonce}")
                 bloc.nonce = nonce
                 bloc.hash = hash
                 return bloc
@@ -99,9 +90,18 @@ class Mineur(Utilisateur):
                 nonce += 1
                 tentatives += 1
             
-            # Affichage de progression
+            # Affichage de la progression
             if tentatives % 100000 == 0:
                 print(f"   {self.nom:<13}: {tentatives:,} tentatives")
+
+
+    def calculer_hash(self, bloc, nonce):
+        """ Calcule le hash du header d'un bloc avec double SHA256 """
+        bits = str(self.difficulte)
+        header = f"{bloc.hash_precedent}{bloc.racine_merkle}{bloc.timestamp}{bits}{nonce}".encode()
+        hash1 = hashlib.sha256(header).digest()
+        hash2 = hashlib.sha256(hash1).hexdigest()
+        return hash2
 
     
     def valider_bloc(self, bloc, bloc_precedent):

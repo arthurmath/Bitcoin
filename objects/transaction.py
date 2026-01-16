@@ -7,7 +7,7 @@ class Transaction:
     def __init__(self, expediteur, destinataire, montant, cle_publique_expediteur):
         self.expediteur: Utilisateur = expediteur
         self.destinataire: Utilisateur = destinataire
-        self.montant = montant
+        self.montant: float = montant
         self.cle_publique = cle_publique_expediteur
         self.timestamp = time.time()
         self.contenu = f"{expediteur.cle_publique}{destinataire.cle_publique}{self.montant}{self.timestamp}"
@@ -17,5 +17,4 @@ class Transaction:
 
     def __str__(self):
         return f"Transaction : {self.expediteur.nom} -> {self.destinataire.nom} : {self.montant} BTC"
-
 
