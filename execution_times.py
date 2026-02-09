@@ -2,8 +2,8 @@
 
 from objects.utilisateur import Utilisateur
 from objects.transaction import Transaction
-from objects.blockchain import Blockchain
 from objects.mineur import Mineur
+from objects.bloc import Bloc
 from typing import List
 import random
 import time
@@ -33,10 +33,9 @@ mineurs = [
 ]
 
 # Initialiser la blockchain
-blockchain = Blockchain()
-bloc_genesis = blockchain.creer_bloc_genesis(utilisateurs)
-bloc_genesis = mineurs[0].miner_bloc(bloc_genesis.transactions)
-blockchain.ajouter_bloc(bloc_genesis)
+blockchain: List[Bloc] = []
+bloc_genesis = mineurs[0].creer_bloc_genesis(utilisateurs)
+blockchain.append(bloc_genesis)
 
 # Liste des transactions en attente
 mempool: List[Transaction] = []
@@ -66,8 +65,8 @@ for i in range(1, n+1):
         start = time.time()
         bloc = mineurs[0].miner_bloc(
             transactions_en_attente=mempool,
-            hash_dernier_bloc=blockchain.chain[-1].hash,
-            index_bloc=len(blockchain.chain),
+            hash_dernier_bloc=blockchain[-1].hash,
+            index_bloc=len(blockchain),
             difficulte=i,
         )
         exec_times_i.append(time.time() - start)

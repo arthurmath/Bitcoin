@@ -1,7 +1,8 @@
 from objects.utilisateur import Utilisateur
 from objects.transaction import Transaction
-from objects.blockchain import Blockchain
+from objects.bloc import Bloc
 from objects.mineur import Mineur
+from objects.prints import afficher_soldes, sauvegarder_blockchain
 from typing import List
 import random
 import threading
@@ -29,10 +30,11 @@ class Simulation:
         ]
 
         # Initialiser la blockchain
-        self.blockchain = Blockchain()
+        self.blockchain: List[Bloc] = []
         bloc_genesis = self.mineurs[0].creer_bloc_genesis(self.utilisateurs)
-        self.blockchain.ajouter_bloc(bloc_genesis)
-        self.afficher_soldes()
+        self.blockchain.append(bloc_genesis)
+        print(f"✅ Bloc ajouté à la blockchain: {bloc_genesis}\n")
+        afficher_soldes(self)
         
         # Liste des transactions en attente
         self.mempool: List[Transaction] = []
@@ -42,17 +44,6 @@ class Simulation:
         self.minage_en_cours = False
         self.minage_lock = threading.Lock()
         self.bloc_gagnant = None
-
-
-    def afficher_soldes(self):
-        print(f"\n{'-'*60}\n💰 SOLDES :\n{'-'*60}")
-        print("\nUtilisateurs:")
-        for user in self.utilisateurs:
-            print(f"  {user.nom}: {self.mineurs[0].calculer_solde(self.blockchain.chain, user.cle_publique):.2f} BTC")
-        print("\nMineurs:")
-        for mineur in self.mineurs:
-            print(f"  {mineur.nom}: {self.mineurs[0].calculer_solde(self.blockchain.chain, mineur.cle_publique):.2f} BTC")
-        print()
 
 
     
@@ -65,16 +56,14 @@ class Simulation:
         montant = round(random.uniform(0.1, 5.0), 2)
         
         # Vérifier que l'expéditeur a assez de fonds
-        if self.mineurs[0].calculer_solde(self.blockchain.chain, expediteur.cle_publique) < montant:
+        if self.mineurs[0].calculer_solde(self.blockchain, expediteur.cle_publique) < montant:
             return None
         
         # Créer et signer la transaction
         tx = Transaction(expediteur, destinataire, montant, expediteur.cle_publique_hex)
         tx.signature = expediteur.signe(tx)
         self.mempool.append(tx)
-
         print(tx)
-        return tx
 
     
     def lancer_minage(self):
@@ -101,8 +90,8 @@ class Simulation:
         # Appel à la méthode du mineur
         bloc = mineur.miner_bloc(
             transactions_en_attente=self.mempool,
-            hash_dernier_bloc=self.blockchain.chain[-1].hash,
-            index_bloc=len(self.blockchain.chain),
+            hash_dernier_bloc=self.blockchain[-1].hash,
+            index_bloc=len(self.blockchain),
             recompense=self.recompense_bloc,
             difficulte=self.difficulte,
             is_mining_active=check_active
@@ -131,15 +120,16 @@ class Simulation:
                 while self.minage_en_cours:
                     time.sleep(0.1)
                 
-                self.mineurs[0].valider_bloc(self.bloc_gagnant, self.blockchain.chain[-1])
-                self.blockchain.ajouter_bloc(self.bloc_gagnant)
+                self.mineurs[0].valider_bloc(self.bloc_gagnant, self.blockchain[-1])
+                self.blockchain.append(self.bloc_gagnant)
+                print(f"✅ Bloc ajouté à la blockchain: {self.bloc_gagnant}\n")
                 self.bloc_gagnant = None
                 self.mempool = []
                 cycles += 1
-            time.sleep(0.1)
+            time.sleep(0.5)
 
-        self.afficher_soldes()
-        self.blockchain.sauvegarder()
+        afficher_soldes(self)
+        sauvegarder_blockchain(self.blockchain)
         
         # Arrêter tous les threads de minage
         self.minage_en_cours = False

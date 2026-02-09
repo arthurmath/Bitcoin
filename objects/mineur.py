@@ -52,14 +52,12 @@ class Mineur(Utilisateur):
             cle_publique_expediteur="SYSTEM"
         )
         
-        # Calculer les frais de transaction
+        # Calcul des frais de transaction
         frais_totaux = sum(0.0001 for _ in transactions_en_attente)  # 0.0001 BTC par transaction
         transaction_recompense.montant += frais_totaux
-        
-        # Ajout de la transaction recompense
         toutes_transactions = transactions_en_attente + [transaction_recompense]
 
-        # Créer le bloc
+        # Création du bloc
         bloc = Bloc(
             index=index_bloc,
             transactions=toutes_transactions,

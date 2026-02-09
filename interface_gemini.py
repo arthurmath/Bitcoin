@@ -5,7 +5,6 @@ import threading
 import time
 from objects.utilisateur import Utilisateur
 from objects.transaction import Transaction
-from objects.blockchain import Blockchain
 from objects.mineur import Mineur
 from objects.bloc import Bloc
 
@@ -66,9 +65,9 @@ class InterfaceVisuelle:
         ]
         
         # Créer la blockchain
-        self.blockchain = Blockchain()
+        self.blockchain: List[Bloc] = []
         bloc_genesis = self.mineurs[0].creer_bloc_genesis(self.utilisateurs)
-        self.blockchain.ajouter_bloc(bloc_genesis)
+        self.blockchain.append(bloc_genesis)
         
         # Positions des utilisateurs (cercle)
         self.positions_utilisateurs = self._calculer_positions_cercle(
@@ -119,8 +118,8 @@ class InterfaceVisuelle:
         montant = round(random.uniform(0.1, 5.0), 2)
         
         # Vérifier que l'expéditeur a assez de fonds
-        if self.mineurs[0].calculer_solde(self.blockchain.chain, expediteur.cle_publique) < montant:
-            montant = round(self.mineurs[0].calculer_solde(self.blockchain.chain, expediteur.cle_publique) * 0.5, 2)
+        if self.mineurs[0].calculer_solde(self.blockchain, expediteur.cle_publique) < montant:
+            montant = round(self.mineurs[0].calculer_solde(self.blockchain, expediteur.cle_publique) * 0.5, 2)
             if montant < 0.1:
                 return None
         
@@ -175,9 +174,9 @@ class InterfaceVisuelle:
         toutes_transactions = [transaction_recompense] + self.transactions_bloc_actuel
         
         bloc = Bloc(
-            index=len(self.blockchain.chain),
+            index=len(self.blockchain),
             transactions=toutes_transactions,
-            hash_precedent=self.blockchain.chain[-1].hash,
+            hash_precedent=self.blockchain[-1].hash,
             difficulte=self.difficulte
         )
         
@@ -221,7 +220,7 @@ class InterfaceVisuelle:
         self.ecran.blit(texte_nom, rect_nom)
         
         # Solde
-        texte_solde = self.font_petit.render(f"{self.mineurs[0].calculer_solde(self.blockchain.chain, utilisateur.cle_publique):.1f} BTC", True, BLANC)
+        texte_solde = self.font_petit.render(f"{self.mineurs[0].calculer_solde(self.blockchain, utilisateur.cle_publique):.1f} BTC", True, BLANC)
         rect_solde = texte_solde.get_rect(center=(x, y + 15))
         self.ecran.blit(texte_solde, rect_solde)
     
@@ -342,7 +341,7 @@ class InterfaceVisuelle:
             self.ecran.blit(nom_texte, rect_nom)
             
             # Solde
-            solde_texte = self.font_petit.render(f"{self.mineurs[0].calculer_solde(self.blockchain.chain, mineur.cle_publique):.2f} BTC", True, couleur_texte)
+            solde_texte = self.font_petit.render(f"{self.mineurs[0].calculer_solde(self.blockchain, mineur.cle_publique):.2f} BTC", True, couleur_texte)
             rect_solde = solde_texte.get_rect(center=(x + largeur // 2, y + 50))
             self.ecran.blit(solde_texte, rect_solde)
             
@@ -410,7 +409,7 @@ class InterfaceVisuelle:
         
         # Afficher les derniers blocs (plus nombreux car on a toute la hauteur)
         nb_blocs_visibles = (HAUTEUR - y_start - 20) // (hauteur_bloc + 10)
-        blocs_a_afficher = self.blockchain.chain[-nb_blocs_visibles:]
+        blocs_a_afficher = self.blockchain[-nb_blocs_visibles:]
         
         for i, bloc in enumerate(blocs_a_afficher):
             y = y_start + i * (hauteur_bloc + 10)
@@ -451,7 +450,7 @@ class InterfaceVisuelle:
         
         # Statistiques
         stats = [
-            f"Blocs: {len(self.blockchain.chain)}",
+            f"Blocs: {len(self.blockchain)}",
             f"Difficulté: {self.difficulte}",
             f"Récompense: {self.recompense_bloc} BTC"
         ]
@@ -495,7 +494,7 @@ class InterfaceVisuelle:
             if self.animation.bloc_vers_blockchain['progression'] >= 1.0:
                 # Animation terminée : ajouter le bloc et réinitialiser
                 bloc = self.animation.bloc_vers_blockchain['bloc']
-                self.blockchain.ajouter_bloc(bloc)
+                self.blockchain.append(bloc)
                 
                 self.animation.bloc_vers_blockchain = None
                 self.transactions_bloc_actuel = []
@@ -519,8 +518,8 @@ class InterfaceVisuelle:
                 nb_blocs_visibles = (HAUTEUR - y_start - 20) // (hauteur_bloc + espacement)
                 
                 # Index visuel cible
-                if len(self.blockchain.chain) < nb_blocs_visibles:
-                    target_idx = len(self.blockchain.chain)
+                if len(self.blockchain) < nb_blocs_visibles:
+                    target_idx = len(self.blockchain)
                 else:
                     target_idx = nb_blocs_visibles - 1
                 
