@@ -106,27 +106,26 @@ class Simulation:
 
                 
     
-    def run(self):
-        cycles = 0
-        while cycles < 1:
+    def run(self, cycles):
+        for i in range(cycles):
             if len(self.mempool) == 0:
-                print(f"\n{'='*60}\n Bloc {cycles+1}\n{'='*60}\n")
+                print(f"\n{'='*60}\n Bloc {i+1}\n{'='*60}\n")
 
-            if len(self.mempool) < self.max_transactions_par_bloc:
+            while len(self.mempool) < self.max_transactions_par_bloc:
                 self.creer_transaction()
-            else:
-                self.lancer_minage()
-                
-                while self.minage_en_cours:
-                    time.sleep(0.1)
-                
-                self.mineurs[0].valider_bloc(self.bloc_gagnant, self.blockchain[-1])
-                self.blockchain.append(self.bloc_gagnant)
-                print(f"✅ Bloc ajouté à la blockchain: {self.bloc_gagnant}\n")
-                self.bloc_gagnant = None
-                self.mempool = []
-                cycles += 1
-            time.sleep(0.5)
+                time.sleep(0.5)
+            
+            self.lancer_minage()
+            
+            while self.minage_en_cours:
+                time.sleep(0.1)
+            
+            self.mineurs[0].valider_bloc(self.bloc_gagnant, self.blockchain[-1])
+            self.blockchain.append(self.bloc_gagnant)
+            print(f"✅ Bloc ajouté à la blockchain: {self.bloc_gagnant}\n")
+            self.bloc_gagnant = None
+            self.mempool = []
+            cycles += 1
 
         afficher_soldes(self)
         sauvegarder_blockchain(self.blockchain)
@@ -140,6 +139,7 @@ class Simulation:
 
 
 if __name__ == "__main__":
+    nombre_cycles = 2
     simulation = Simulation()
-    simulation.run()
+    simulation.run(nombre_cycles)
 
