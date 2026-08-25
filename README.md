@@ -105,7 +105,7 @@ Le halving est un évènement encodé dans le protocol Bitcoin s'exécutant de m
 
 ### **5. Comment cela garantit la sécurité**
 
-Le Proof of Work rend les attaques énergétiquement coûteuses. Voyons deux exemples d'attaques : une tentative de falsification d'un bloc déjà inscrit dans la blockchain et du dernier bloc en cours de minage. Tout d'abord, il est impossible d'enregistrer une transaction d'un autre utilisateur vers soi-même, car il faudrait sa clé privée pour signer la transaction. Il est cependant possible de modifier une transaction faite soi-même vers quelqu'un d'autre. Par exemple, j'ai acheté une moto pour 2 BTC, puis je modifie cette transaction après après avoir reçu pour n'avoir envoyé que 1 BTC.
+Le Proof of Work rend les attaques énergétiquement coûteuses. Voyons deux exemples d'attaques : une tentative de falsification d'un bloc déjà inscrit dans la blockchain et du dernier bloc en cours de minage. Tout d'abord, il est impossible d'enregistrer une transaction d'un autre utilisateur vers soi-même, car il faudrait sa clé privée pour signer la transaction. Il est cependant possible de modifier une transaction faite soi-même vers quelqu'un d'autre. Par exemple, j'ai acheté une moto pour 2 BTC, puis je modifie cette transaction après l'avoir reçue pour n'avoir envoyé que 1 BTC.
 
 
 #### Tentative de modification d'un bloc déjà validé
