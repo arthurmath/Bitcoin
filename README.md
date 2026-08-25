@@ -89,9 +89,9 @@ Il faut trouver un hash commençant par au moins quatre zéros (qu'importe les d
 
 Il y a donc une compétition entre tous les mineurs du monde pour trouver le hash valide du bloc en cours. Lorsqu’un mineur trouve un hash valide, il  diffuse le bloc au reste du réseau, il est ajouté à la blockchain. Il est ensuite facile pour les autres mineurs de vérifier que le nonce est correct, et que donc ce bloc a été validé.
 
-Le mineur gagant reçoit alors :
-* la **récompense de bloc** (3,125 BTC),
-* les **frais de transaction** inclus dans ce bloc (de l'ordre de 0.00001 BTC).
+Le mineur gagant reçoit alors :  
+* la **récompense de bloc** (3,125 BTC),  
+* les **frais de transaction** inclus dans ce bloc (de l'ordre de 0.00001 BTC).  
 
 Le halving est un évènement encodé dans le protocol Bitcoin s'exécutant de manière automatique tous les 210.000 blocs (environ tous les 4 ans) divisant par deux le nombre de bitcoins créés lors du minage. Le dernier bitcoin crée le sera en 2140 environ, pour un total final de 21M BTC émis.
 
@@ -110,10 +110,10 @@ Le Proof of Work rend les attaques énergétiquement coûteuses. Voyons deux exe
 
 #### Tentative de modification d'un bloc déjà validé
 
-Si un attaquant veut modifier un bloc déjà inscrit dans la Blockchain :
-&nbsp;&nbsp;Il change une transaction → change le hash du bloc.
-&nbsp;&nbsp;Donc le lien avec le bloc suivant devient invalide car il contient le hash du bloc précédent.
-&nbsp;&nbsp;Il doit recalculer les hashs de tous les blocs suivants pour rattraper la chaîne honnête.
+Si un attaquant veut modifier un bloc déjà inscrit dans la Blockchain :  
+&nbsp;&nbsp;Il change une transaction → change le hash du bloc.  
+&nbsp;&nbsp;Donc le lien avec le bloc suivant devient invalide car il contient le hash du bloc précédent.  
+&nbsp;&nbsp;Il doit recalculer les hashs de tous les blocs suivants pour rattraper la chaîne honnête.  
 
 Mais pendant ce temps, le reste du réseau continue d’avancer. Modifier un bloc impliquerait de refaire tout ce calcul pour ce bloc et tous les suivants. Les mineurs suivent toujours la chaîne la chaîne la plus longue, donc la chaine avec le plus de travail réalisé. La chaine honnête est toujours la plus longue chaine car c'est celle qui a accumulé le plus de travail. L’attaquant devrait donc disposer de > 50% de la puissance de calcul totale pour espérer rattraper et dépasser la chaîne honnête, c’est la fameuse attaque des 51%, en pratique impossible à mener à grande échelle. 
 
